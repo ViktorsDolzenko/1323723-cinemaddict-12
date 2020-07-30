@@ -105,17 +105,16 @@ const filmContainer = document.querySelector(`.films-list__container`);
 
 for (let i = 0; i < NEW_FILM; i++) {
   render(filmContainer, filmTemplate(), `beforeend`);
-};
+}
 
 render(filmContainer, showMoreButtonTemplate(), `afterend`);
-const showMoreButton = document.querySelector(`.films-list__show-more`);
 const films = document.querySelector(`.films`);
 render(films, topRatedMoviesTemplate(), `beforeend`);
 
 const topRatedContainer = document.querySelector(`.films-list__container--top-rated`);
 for (let i = 0; i < 2; i++) {
   render(topRatedContainer, filmTemplate(), `beforeEnd`);
-};
+}
 
 const topCommentedContainer = document.querySelector(`.films-list--extra-rating`);
 render(topCommentedContainer, topCommentedMoviesTemplate(), `afterend`);
@@ -124,4 +123,4 @@ const topCommentedfilms = document.querySelector(`.films-list__container--top-co
 
 for (let i = 0; i < 2; i++) {
   render(topCommentedfilms, filmTemplate(), `beforeend`);
-};
+}
