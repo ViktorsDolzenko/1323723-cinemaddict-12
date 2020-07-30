@@ -1,3 +1,4 @@
+'use strict';
 const NEW_FILM = 5;
 const userRatingTemplate = () => {
   return (
@@ -88,7 +89,7 @@ const pageHeader = document.querySelector(`.header`);
 
 render(pageHeader, userRatingTemplate(), `beforeEnd`);
 
-const pageMain = document.querySelector(`.main`)
+const pageMain = document.querySelector(`.main`);
 
 render(pageMain, navigationTemplate(), `afterbegin`);
 
@@ -107,8 +108,8 @@ for (let i = 0; i < NEW_FILM; i++) {
 };
 
 render(filmContainer, showMoreButtonTemplate(), `afterend`);
-const showMoreButton = document.querySelector(`.films-list__show-more`)
-const films = document.querySelector(`.films`)
+const showMoreButton = document.querySelector(`.films-list__show-more`);
+const films = document.querySelector(`.films`);
 render(films, topRatedMoviesTemplate(), `beforeend`);
 
 const topRatedContainer = document.querySelector(`.films-list__container--top-rated`);
