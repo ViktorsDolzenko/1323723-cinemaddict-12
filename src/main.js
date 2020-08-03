@@ -1,5 +1,3 @@
-
-const NEW_FILM = 5;
 import {userRatingTemplate} from "./view/user-rating.js";
 import {navigationTemplate} from "./view/nav.js";
 import {sortTemplate} from "./view/sort.js";
@@ -8,6 +6,8 @@ import {filmTemplate} from "./view/new-film.js";
 import {showMoreButtonTemplate} from "./view/button.js";
 import {topRatedMoviesTemplate} from "./view/toprated-container.js";
 import {topCommentedMoviesTemplate} from "./view/topcommented-container.js";
+import {filmDetailsTemplate} from "./view/film-details.js";
+const NEW_FILM = 5;
 
 
 const render = (container, place, template) => {
@@ -53,3 +53,5 @@ const topCommentedfilms = document.querySelector(`.films-list__container--top-co
 for (let i = 0; i < 2; i++) {
   render(topCommentedfilms, filmTemplate(), `beforeend`);
 }
+
+render(filmContainer, filmDetailsTemplate(), `beforeend`);
