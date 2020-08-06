@@ -12,11 +12,13 @@
   "devDependencies": {
     "eslint": "6.1.0",
     "eslint-config-htmlacademy": "0.5.2",
+    "lodash": "4.17.19",
     "webpack": "4.44.1",
     "webpack-cli": "3.3.12",
     "webpack-dev-server": "3.11.0"
   },
   "engines": {
     "node": "10"
-  }
+  },
+  "dependencies": {}
 }
