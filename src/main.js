@@ -38,10 +38,9 @@ import {
   showMoreButtonTemplate
 } from "./view/button.js";
 
-export const NEW_FILM = 20;
-const filmMock = new Array(NEW_FILM).fill().map(generateFilm);
-const filter = [];
-const count = new Array(filter).fill().map(filterCount);
+const NEW_FILM = 20;
+export const filmMock = new Array(NEW_FILM).fill().map(generateFilm);
+const count = new Array(filterCount());
 
 const render = (container, place, template) => {
   container.insertAdjacentHTML(template, place);
@@ -107,4 +106,3 @@ const showMore = showMoreFilms();
 showMore();
 const button = document.querySelector(`.films-list__show-more`);
 button.addEventListener(`click`, showMore);
-
