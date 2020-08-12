@@ -1,5 +1,12 @@
-export const navigationTemplate = (count) => {
-  const {watchlist, history, favorites} = count;
+import {
+  createElement
+} from "../util.js";
+const navigationTemplate = (count) => {
+  const {
+    watchlist,
+    history,
+    favorites
+  } = count;
   return (
     `<nav class="main-navigation">
   <div class="main-navigation__items">
@@ -12,3 +19,25 @@ export const navigationTemplate = (count) => {
 </nav>`
   );
 };
+export default class FilterView {
+  constructor(filters) {
+    this._filters = filters;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return navigationTemplate(this._filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
