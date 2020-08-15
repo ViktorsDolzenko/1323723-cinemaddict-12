@@ -1,5 +1,9 @@
-export const filmDetailsTemplate = (mock) => {
-  const {
+import {
+  createElement
+} from "../util.js";
+
+export default class FilmDetails {
+  constructor({
     title,
     poster,
     description,
@@ -10,9 +14,23 @@ export const filmDetailsTemplate = (mock) => {
     actors,
     writer,
     director
-  } = mock;
-  return (
-    `<section class="film-details" style="display:none">
+  }) {
+    this._element = null;
+    this._title = title;
+    this._poster = poster;
+    this._description = description;
+    this._score = score;
+    this._year = year;
+    this._genre = genre;
+    this._duration = duration;
+    this._actors = actors;
+    this._writer = writer;
+    this._director = director;
+  }
+
+  getTemplate() {
+    return (
+      `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
     <div class="form-details__top-container">
       <div class="film-details__close">
@@ -20,7 +38,7 @@ export const filmDetailsTemplate = (mock) => {
       </div>
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
-          <img class="film-details__poster-img" src=${poster} alt="">
+          <img class="film-details__poster-img" src=${this._poster} alt="">
 
           <p class="film-details__age">18+</p>
         </div>
@@ -28,35 +46,35 @@ export const filmDetailsTemplate = (mock) => {
         <div class="film-details__info">
           <div class="film-details__info-head">
             <div class="film-details__title-wrap">
-              <h3 class="film-details__title">${title}</h3>
-              <p class="film-details__title-original">${title}</p>
+              <h3 class="film-details__title">${this._title}</h3>
+              <p class="film-details__title-original">${this._title}</p>
             </div>
 
             <div class="film-details__rating">
-              <p class="film-details__total-rating">${score}</p>
+              <p class="film-details__total-rating">${this._score}</p>
             </div>
           </div>
 
           <table class="film-details__table">
             <tr class="film-details__row">
               <td class="film-details__term">Director</td>
-              <td class="film-details__cell">${director}</td>
+              <td class="film-details__cell">${this._director}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Writers</td>
-              <td class="film-details__cell">${writer}</td>
+              <td class="film-details__cell">${this._writer}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Actors</td>
-              <td class="film-details__cell">${actors}</td>
+              <td class="film-details__cell">${this._actors}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${year}</td>
+              <td class="film-details__cell">${this._year}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${duration}</td>
+              <td class="film-details__cell">${this._duration}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
@@ -65,14 +83,14 @@ export const filmDetailsTemplate = (mock) => {
             <tr class="film-details__row">
               <td class="film-details__term">Genres</td>
               <td class="film-details__cell">
-                <span class="film-details__genre">${genre}</span>
-                <span class="film-details__genre">${genre}</span>
-                <span class="film-details__genre">${genre}</span></td>
+                <span class="film-details__genre">${this._genre}</span>
+                <span class="film-details__genre">${this._genre}</span>
+                <span class="film-details__genre">${this._genre}</span></td>
             </tr>
           </table>
 
           <p class="film-details__film-description">
-            ${description}
+            ${this._description}
           </p>
         </div>
       </div>
@@ -181,5 +199,18 @@ export const filmDetailsTemplate = (mock) => {
     </div>
   </form>
 </section>`
-  );
-};
+    );
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
