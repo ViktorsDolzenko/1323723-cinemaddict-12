@@ -34,6 +34,7 @@ import
 ShowMoreButton
   from "./view/button.js";
 
+import NoData from "./view/no-data.js";
 import {
   render,
   RenderPosition
@@ -73,38 +74,54 @@ const renderCard = (filmList, film) => {
   const closeDetails = () => {
     footer.removeChild(DetailsComponent);
   };
+  const closeDetailsKey = (evt) => {
+    if (evt.which === 27) {
+      footer.removeChild(DetailsComponent);
+    }
+  };
 
   openPopup.forEach((element) => {
     element.addEventListener(`click`, openDetails);
   });
 
   closePopup.addEventListener(`click`, closeDetails);
+
+  closePopup.addEventListener(`keydown`, closeDetailsKey);
+
 };
+
 
 const filmContainer = filmContainerView.querySelector(`.films-list__container`);
 const topRatedFilmsView = new TopRatedFilms().getElement();
-render(filmContainerView, topRatedFilmsView, RenderPosition.BEFOREEND);
+
 const topRatedContainer = topRatedFilmsView.querySelector(`.films-list__container--top-rated`);
 filmMock.sort((a, b) => b.score - a.score).slice(0, 2).forEach((element) => {
   renderCard(topRatedContainer, element);
 });
 const topCommentedView = new TopCommentedFilms().getElement();
-render(filmContainerView, topCommentedView, RenderPosition.BEFOREEND);
-
 const topCommentedfilms = topCommentedView.querySelector(`.films-list__container--top-commented`);
+if (filmMock.length > 1) {
+  render(filmContainerView, topRatedFilmsView, RenderPosition.BEFOREEND);
+  render(filmContainerView, topCommentedView, RenderPosition.BEFOREEND);
+}
 
 filmMock.sort((a, b) => b.score - a.score).slice(0, 2).forEach((element) => {
   renderCard(topCommentedfilms, element);
 });
-
+const filmList = filmContainerView.querySelector(`.films-list`);
 const footerStats = document.querySelector(`.footer__statistics`);
 render(footerStats, new FooterStats(filmMock).getElement(), RenderPosition.BEFOREEND);
 const showMoreFilms = () => {
   let counter = 0;
   const addFilms = () => {
-    filmMock.slice(counter, counter + 5).forEach((element) => {
-      renderCard(filmContainer, element);
-    });
+    if (filmMock.length < 1) {
+      render(filmList, new NoData().getElement(), RenderPosition.BEFOREEND);
+
+    } else {
+      filmMock.slice(counter, counter + 5).forEach((element) => {
+        renderCard(filmContainer, element);
+      });
+    }
     counter += 5;
     if (counter >= filmMock.length) {
       button.remove();

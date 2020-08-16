@@ -1,11 +1,9 @@
 import {
   createElement
-} from '../util.js';
-
-export default class showMoreButton {
-
+} from "../util.js";
+export default class NoData {
   getTemplate() {
-    return `<button class="films-list__show-more">Show more</button>`;
+    return `<h2 class="films-list__title">There are no movies in our database</h2>`;
   }
 
   getElement() {
