@@ -1,8 +1,5 @@
-import {
-  createElement
-} from "../util.js";
-
-export default class TopCommentedFilms {
+import Abstract from "./abstract.js";
+export default class TopCommentedFilms extends Abstract {
 
   getTemplate() {
     return (`<section class="films-list--extra films-list--extra-commented">
@@ -10,17 +7,5 @@ export default class TopCommentedFilms {
 <div class="films-list__container films-list__container--top-commented">
 </div>
 </section>`);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

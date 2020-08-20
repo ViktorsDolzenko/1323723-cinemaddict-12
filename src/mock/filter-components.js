@@ -1,6 +1,4 @@
-import {
-  getRandomInt
-} from "./film-description.js";
+import {getRandomInt} from "../utils/common.js";
 export const filterCount = () => {
   return {
     watchlist: getRandomInt(1, 20),

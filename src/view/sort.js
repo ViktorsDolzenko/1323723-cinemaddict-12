@@ -1,34 +1,11 @@
-import {
-  createElement
-} from "../util.js";
+import Abstract from "./abstract.js";
 
-const sortTemplate = () => {
-  return (
-    `<ul class="sort">
-<li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
-<li><a href="#" class="sort__button">Sort by date</a></li>
-<li><a href="#" class="sort__button">Sort by rating</a></li>
-</ul>`);
-};
-
-export default class SortView {
-  constructor() {
-    this._element = null;
-  }
-
+export default class SortView extends Abstract {
   getTemplate() {
-    return sortTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+    return (`<ul class="sort">
+    <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
+    <li><a href="#" class="sort__button">Sort by date</a></li>
+    <li><a href="#" class="sort__button">Sort by rating</a></li>
+    </ul>`);
   }
 }
