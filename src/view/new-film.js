@@ -1,16 +1,17 @@
 import Abstract from "./abstract.js";
 export default class NewFilm extends Abstract {
-  constructor({
-    title,
-    poster,
-    description,
-    score,
-    year,
-    genre,
-    duration,
-    commentsCount,
-  }) {
+  constructor(film) {
     super();
+    const {
+      title,
+      poster,
+      description,
+      score,
+      year,
+      genre,
+      duration,
+      commentsCount,
+    } = film;
     this._element = null;
     this._title = title;
     this._poster = poster;

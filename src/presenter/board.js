@@ -24,40 +24,38 @@ import {
 
 
 const pageMain = document.querySelector(`.main`);
-const topRatedContainer = new TopRatedFilms().getElement().querySelector(`.films-list__container--top-rated`);
-const topCommentedContainer = new TopCommentedFilms().getElement().querySelector(`.films-list__container--top-commented`);
-const filmList = new FilmContainer().getElement().querySelector(`.films-list`);
+
 export default class Board {
   constructor(boardContainer) {
     this._boardContainer = boardContainer;
     this._filmContainerComponent = new FilmContainer();
-    this._topRatedFilmsComponent = new TopRatedFilms();
-    this._topCommentedFilmsComponent = new TopCommentedFilms();
-    this._filmDetailsComponent = new FilmDetails();
+    this._topRatedComponent = new TopRatedFilms();
+    this._topCommentedComponent = new TopCommentedFilms();
     this._showMoreButtonComponent = new ShowMoreButton();
     this._noDataComponent = new NoData();
-    this._showMorefilms = this._showMorefilms.bind(this);
+    this._onClickShowMoreFilms = this._showMoreFilms().bind(this);
+    this._filmList = this._filmContainerComponent.getElement().querySelector(`.films-list`);
+    this._filmListContainer = this._filmContainerComponent.getElement().querySelector(`.films-list__container`);
+    this._topRatedContainer = this._topRatedComponent.getElement().querySelector(`.films-list__container--top-rated`);
+    this._topCommentedContainer = this._topCommentedComponent.getElement().querySelector(`.films-list__container--top-commented`);
   }
 
   init(boardFilms) {
     this._boardFilms = boardFilms.slice();
-    render(this._boardContainer, this._filmContainerComponent, RenderPosition.BEFOREEND);
-
-    this._filmContainer();
-    this._renderCards();
-    this._showMoreFilmsHandler();
+    render(pageMain, this._filmContainerComponent, RenderPosition.BEFOREEND);
+    render(this._filmContainerComponent, this._topRatedComponent, RenderPosition.BEFOREEND);
+    render(this._filmContainerComponent, this._topCommentedComponent, RenderPosition.BEFOREEND);
     this._topRatedFilms();
     this._topCommentedfilms();
+    this._onClickShowMoreFilms();
+    this._showMoreFilmsHandler();
   }
 
-  _filmContainer() {
-    render(pageMain, this._filmContainerComponent, RenderPosition.BEFOREEND);
-  }
 
-  _renderCards(film) {
+  _renderCard(filmContainer, film) {
     const filmComponent = new NewFilm(film);
     const DetailsComponent = new FilmDetails(film);
-
+    render(filmContainer, filmComponent, RenderPosition.BEFOREEND);
 
     const openDetails = () => {
       showPopup(DetailsComponent);
@@ -85,13 +83,13 @@ export default class Board {
 
   _topRatedFilms() {
     this._boardFilms.sort((a, b) => b.score - a.score).slice(0, 2).forEach((element) => {
-      render(topRatedContainer, element, RenderPosition.BEFOREEND);
+      this._renderCard(this._topRatedContainer, element);
     });
   }
 
   _topCommentedfilms() {
     this._boardFilms.sort((a, b) => b.score - a.score).slice(0, 2).forEach((element) => {
-      render(topCommentedContainer, element, RenderPosition.BEFOREEND);
+      this._renderCard(this._topCommentedContainer, element);
     });
   }
 
@@ -100,24 +98,24 @@ export default class Board {
     let counter = 0;
     const addFilms = () => {
       if (this._boardFilms.length < 1) {
-        render(filmList, this._noDataComponent, RenderPosition.BEFOREEND);
+        render(this._filmListContainer, this._noDataComponent, RenderPosition.BEFOREEND);
 
       } else {
         this._boardFilms.slice(counter, counter + 5).forEach((element) => {
-          render(this._filmContainerComponent, element, RenderPosition.BEFOREEND);
+          this._renderCard(this._filmListContainer, element);
         });
       }
       counter += 5;
       if (counter >= this._boardFilms.length) {
-        this._showMoreButtonComponent.remove();
+        this._showMoreButtonComponent.getElement().remove();
       }
     };
     return addFilms;
   }
 
   _showMoreFilmsHandler() {
-    render(filmList, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
-    this._showMoreButtonComponent.setClickHandler(this._showMorefilms);
+    render(this._filmList, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
+    this._showMoreButtonComponent.setClickHandler(this._onClickShowMoreFilms);
   }
 
 }

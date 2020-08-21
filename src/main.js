@@ -34,12 +34,12 @@ const pageHeader = document.querySelector(`.header`);
 render(pageHeader, new UserRatingView(), RenderPosition.BEFOREEND);
 
 const pageMain = document.querySelector(`.main`);
-const boardPresenter = new Board(pageMain);
-boardPresenter(filmMock);
+
 
 render(pageMain, new FilterView(filtersNumber), RenderPosition.AFTERBEGIN);
 
 render(pageMain, new SortView(), RenderPosition.BEFOREEND);
 const footerStats = document.querySelector(`.footer__statistics`);
 render(footerStats, new FooterStats(filmMock), RenderPosition.BEFOREEND);
-
+const boardPresenter = new Board(pageMain);
+boardPresenter.init(filmMock);

@@ -1,19 +1,20 @@
 import Abstract from "./abstract.js";
 
 export default class FilmDetails extends Abstract {
-  constructor({
-    title,
-    poster,
-    description,
-    score,
-    year,
-    genre,
-    duration,
-    actors,
-    writer,
-    director
-  }) {
+  constructor(film) {
     super();
+    const {
+      title,
+      poster,
+      description,
+      score,
+      year,
+      genre,
+      duration,
+      actors,
+      writer,
+      director
+    } = film;
     this._title = title;
     this._poster = poster;
     this._description = description;

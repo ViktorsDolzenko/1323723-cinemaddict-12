@@ -27,6 +27,6 @@ export default class Abstract {
 
   setClickHandler(callback) {
     this._callback.click = callback;
-    this.getElement().addEventListener(`click`, this._clickHandler);
+    this.getElement().addEventListener(`click`, this._clickHandler.bind(this));
   }
 }

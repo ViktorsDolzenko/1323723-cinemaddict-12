@@ -24,14 +24,14 @@ const people = [`Lee Aaker`,
 
 
 const generateTitle = () => {
-  const title = [`Terminator`, `Troy`, `Matrix`, `Back in Future`, `Oblivion`];
+  const title = [`Terminator`, `Troy`, `Matrix`, `Back in Future`, `Oblivion`, `Haters`, `Pimp`, `Gladiator`, `Superman`];
 
   return title[getRandomInt(0, title.length - 1)];
 
 };
 
 const generatePoster = () => {
-  const images = [`/images/posters/made-for-each-other.png`, `/images/posters/popeye-meets-sinbad.png`, `/images/posters/sagebrush-trail.jpg`];
+  const images = [`/images/posters/made-for-each-other.png`, `/images/posters/popeye-meets-sinbad.png`, `/images/posters/sagebrush-trail.jpg`, `/images/posters/santa-claus-conquers-the-martians.jpg`, `/images/posters/the-dance-of-life.jpg`, `/images/posters/the-great-flamarion.jpg`, `/images/posters/the-man-with-the-golden-arm.jpg`];
   const imagePath = images[getRandomInt(0, images.length - 1)];
   return imagePath;
 };
@@ -52,7 +52,7 @@ const generateYear = () => {
 };
 
 const generateGenre = () => {
-  const genres = [`horror`, `comedy`, `romantic`, `drama`];
+  const genres = [`horror`, `comedy`, `romantic`, `drama`, `thriller`];
   return genres[getRandomInt(0, genres.length - 1)];
 };
 
