@@ -1,17 +1,17 @@
-import {
-  createElement
-} from '../util.js';
-export default class NewFilm {
-  constructor({
-    title,
-    poster,
-    description,
-    score,
-    year,
-    genre,
-    duration,
-    commentsCount,
-  }) {
+import Abstract from "./abstract.js";
+export default class NewFilm extends Abstract {
+  constructor(film) {
+    super();
+    const {
+      title,
+      poster,
+      description,
+      score,
+      year,
+      genre,
+      duration,
+      commentsCount,
+    } = film;
     this._element = null;
     this._title = title;
     this._poster = poster;
@@ -21,6 +21,7 @@ export default class NewFilm {
     this._genre = genre;
     this._duration = duration;
     this._commentsCount = commentsCount;
+    this._onClickHandler = this._openClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -44,16 +45,15 @@ export default class NewFilm {
 </article>`
     );
   }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _openClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  openPopupHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelectorAll(`.film-card__poster, .film-card__title, .film-card__comments`).forEach((element) => {
+      element.addEventListener(`click`, this._onClickHandler);
+    });
   }
 }

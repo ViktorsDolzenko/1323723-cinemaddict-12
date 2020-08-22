@@ -1,4 +1,4 @@
-import {getRandomInt} from "./film-description.js";
+import {getRandomInt} from "../utils/common.js";
 const generateCommentText = () => {
   const comment = [`Must See`, `Amazing`, `10/10`, `unwatchable trash`, `Not bad`];
   return comment[getRandomInt(0, comment.length - 1)];

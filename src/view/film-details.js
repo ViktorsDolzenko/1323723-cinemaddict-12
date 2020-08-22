@@ -1,21 +1,20 @@
-import {
-  createElement
-} from "../util.js";
+import Abstract from "./abstract.js";
 
-export default class FilmDetails {
-  constructor({
-    title,
-    poster,
-    description,
-    score,
-    year,
-    genre,
-    duration,
-    actors,
-    writer,
-    director
-  }) {
-    this._element = null;
+export default class FilmDetails extends Abstract {
+  constructor(film) {
+    super();
+    const {
+      title,
+      poster,
+      description,
+      score,
+      year,
+      genre,
+      duration,
+      actors,
+      writer,
+      director
+    } = film;
     this._title = title;
     this._poster = poster;
     this._description = description;
@@ -26,6 +25,7 @@ export default class FilmDetails {
     this._actors = actors;
     this._writer = writer;
     this._director = director;
+    this._onClickHandler = this._closeClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -202,15 +202,15 @@ export default class FilmDetails {
     );
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _closeClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  closePopupHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._onClickHandler);
   }
 }
+
+
