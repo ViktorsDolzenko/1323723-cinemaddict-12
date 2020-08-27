@@ -4,9 +4,7 @@ UserRatingView
 import
 FilterView
   from "./view/nav.js";
-import
-SortView
-  from "./view/sort.js";
+
 
 import
 FooterStats
@@ -37,8 +35,6 @@ const pageMain = document.querySelector(`.main`);
 
 
 render(pageMain, new FilterView(filtersNumber), RenderPosition.AFTERBEGIN);
-
-render(pageMain, new SortView(), RenderPosition.BEFOREEND);
 const footerStats = document.querySelector(`.footer__statistics`);
 render(footerStats, new FooterStats(filmMock), RenderPosition.BEFOREEND);
 const boardPresenter = new Board(pageMain);
