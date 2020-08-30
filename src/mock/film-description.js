@@ -70,8 +70,24 @@ const generatePeople = (n) => {
   return randomPeople.slice(0, n);
 };
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
+const generateIsFavorite = () => {
+  const isfavorite = Math.random() >= 0.5;
+  return isfavorite;
+};
+const generateIsWatchlist = () => {
+  const isWatchlist = Math.random() >= 0.5;
+  return isWatchlist;
+};
+const generateIsWatched = () => {
+  const isWatched = Math.random() >= 0.5;
+  return isWatched;
+};
+
 export const generateFilm = () => {
   return {
+    id: generateId(),
     title: generateTitle(),
     poster: generatePoster(),
     description: generateDescription(),
@@ -83,5 +99,8 @@ export const generateFilm = () => {
     actors: generatePeople(3),
     writer: generatePeople(1),
     director: generatePeople(1),
+    isFavorite: generateIsFavorite(),
+    isWatchlist: generateIsWatchlist(),
+    isWatched: generateIsWatched(),
   };
 };
