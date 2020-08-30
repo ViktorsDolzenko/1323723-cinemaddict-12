@@ -34,7 +34,6 @@ export default class Film {
     const prevDetailsComponent = this._detailsComponent;
     this._filmComponent = new NewFilm(film);
     this._detailsComponent = new FilmDetails(film);
-
     this._filmComponent.openPopupHandler(this._openPopupHandler);
     this._filmComponent.setWatchListClickHandler(this._watchListClickHandler);
     this._filmComponent.setFavoriteClickHandler(this._favoriteClickHandler);
@@ -46,7 +45,10 @@ export default class Film {
       return;
     }
     replace(this._filmComponent, prevFilmComponent);
-    replace(this._detailsComponent, prevDetailsComponent);
+
+    if (this._filmListContainer.getElement().contains(this.prevDetailsComponent.getElement())) {
+      replace(this._detailsComponent, this.prevDetailsComponent);
+    }
 
   }
 
