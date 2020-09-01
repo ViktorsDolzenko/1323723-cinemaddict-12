@@ -37,6 +37,8 @@ export default class FilmDetails extends Abstract {
     this._watchedFilmsClickHandler = this._watchedClickHandler.bind(this);
     this._film = film;
     this._setWatchedClickHandler();
+    this._setFavoriteClickHandler();
+    this._setWatchListClickHandler();
   }
 
   getTemplate() {
@@ -213,26 +215,23 @@ export default class FilmDetails extends Abstract {
     );
   }
 
-  _watchListClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.watchListClick();
-  }
-
-  _favoriteClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.favoriteClick();
-  }
-
   _watchedClickHandler() {
     this._updateData({isWatched: !this._film.isWatched});
   }
 
-  setWatchListClickHandler(callback) {
+  _favoriteClickHandler() {
+    this._updateData({isFavorite: !this._film.isFavorite});
+  }
+
+  _watchListClickHandler() {
+    this._updateData({isWatchlist: !this._film.isWatchlist});
+  }
+  _setWatchListClickHandler(callback) {
     this._callback.watchListClick = callback;
     this.getElement().querySelector(`#watchlist`).addEventListener(`click`, this._watchListFilmsClickHandler);
   }
 
-  setFavoriteClickHandler(callback) {
+  _setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector(`#favorite`).addEventListener(`click`, this._favoriteFilmsClickHandler);
   }

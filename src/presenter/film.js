@@ -25,7 +25,6 @@ export default class Film {
     this._watchListClickHandler = this._watchListClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
-    // this.updateDataHandler = this.updateData.bind(this);
   }
   init(filmListContainer, film) {
     this._film = film;
@@ -45,10 +44,7 @@ export default class Film {
       return;
     }
     replace(this._filmComponent, prevFilmComponent);
-
-    if (this._filmListContainer.getElement().contains(this.prevDetailsComponent.getElement())) {
-      replace(this._detailsComponent, this.prevDetailsComponent);
-    }
+    replace(this._detailsComponent, prevDetailsComponent);
 
   }
 
@@ -71,9 +67,8 @@ export default class Film {
   }
 
   _closeDetails(film) {
-    // closePopup(this._detailsComponent);
+    closePopup(this._detailsComponent);
     this.updateData(film);
-    this._detailsComponent.getElement().remove();
     document.removeEventListener(`keydown`, this._closeDetailsKey);
   }
 
