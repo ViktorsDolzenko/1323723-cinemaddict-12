@@ -11,11 +11,12 @@ import {
   remove,
   replace
 } from "../utils/render.js";
+import Smart from "../view/smart.js";
 
 
-export default class Film {
+export default class Film extends Smart {
   constructor(changeData) {
-
+    super();
     this._filmComponent = null;
     this._detailsComponent = null;
     this._changeData = changeData;
@@ -78,39 +79,6 @@ export default class Film {
 
   _closePopupHandler(film) {
     this._closeDetails(film);
-  }
-
-
-  _favoriteClickHandler() {
-    this._changeData(
-        Object.assign({},
-            this._film, {
-              isFavorite: !this._film.isFavorite
-            }
-        )
-    );
-  }
-
-  _watchListClickHandler() {
-    this._changeData(
-        Object.assign({},
-            this._film, {
-              isWatchlist: !this._film.isWatchlist
-            }
-        )
-    );
-  }
-  _watchedClickHandler() {
-    this._changeData(
-        Object.assign({},
-            this._film, {
-              isWatched: !this._film.isWatched
-            }
-        )
-    );
-  }
-  updateData(film) {
-    this._changeData(Object.assign({}, this._film, film));
   }
 }
 
