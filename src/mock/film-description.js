@@ -72,18 +72,11 @@ const generatePeople = (n) => {
 
 const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
-const generateIsFavorite = () => {
-  const isfavorite = Math.random() >= 0.5;
-  return isfavorite;
+const getRandomBool = () => {
+  const randomBool = Math.random() >= 0.5;
+  return randomBool;
 };
-const generateIsWatchlist = () => {
-  const isWatchlist = Math.random() >= 0.5;
-  return isWatchlist;
-};
-const generateIsWatched = () => {
-  const isWatched = Math.random() >= 0.5;
-  return isWatched;
-};
+
 
 export const generateFilm = () => {
   return {
@@ -99,8 +92,8 @@ export const generateFilm = () => {
     actors: generatePeople(3),
     writer: generatePeople(1),
     director: generatePeople(1),
-    isFavorite: generateIsFavorite(),
-    isWatchlist: generateIsWatchlist(),
-    isWatched: generateIsWatched(),
+    isFavorite: getRandomBool(),
+    isWatchlist: getRandomBool(),
+    isWatched: getRandomBool(),
   };
 };
