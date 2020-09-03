@@ -1,16 +1,13 @@
 import
 FilmContainer
   from "../view/film-container.js";
-import NewFilm
-  from "../view/new-film.js";
+
 import
 TopRatedFilms
   from "../view/toprated-container.js";
 import TopCommentedFilms
   from "../view/topcommented-container.js";
-import FilmDetails
-  from "../view/film-details.js";
-
+import {updateItem} from "../utils/common.js";
 import
 ShowMoreButton
   from "../view/button.js";
@@ -25,10 +22,9 @@ import {sortByRating, sortByDate} from "../utils/sortFunction.js";
 import {
   render,
   RenderPosition,
-  showPopup,
-  closePopup
 } from "../utils/render.js";
 
+import FilmPresenter from "./film.js";
 
 const pageMain = document.querySelector(`.main`);
 
@@ -39,6 +35,9 @@ export default class Board {
     this._topRatedComponent = new TopRatedFilms();
     this._topCommentedComponent = new TopCommentedFilms();
     this._noDataComponent = new NoData();
+    this._filmPresenter = {};
+    this._topCommentedPresenter = {};
+    this._topRatedPresenter = {};
     this._onClickShowMoreFilms = this._showMoreFilms().bind(this);
     this._filmList = this._filmContainerComponent.getElement().querySelector(`.films-list`);
     this._filmListContainer = this._filmContainerComponent.getElement().querySelector(`.films-list__container`);
@@ -46,6 +45,7 @@ export default class Board {
     this._topCommentedContainer = this._topCommentedComponent.getElement().querySelector(`.films-list__container--top-commented`);
     this._sortComponent = new SortView();
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._handleFilmChange = this._handleFilmChange.bind(this);
   }
 
   init(boardFilms) {
@@ -62,45 +62,26 @@ export default class Board {
     this._showMoreFilmsHandler();
   }
 
-
-  _renderCard(filmContainer, film) {
-    const filmComponent = new NewFilm(film);
-    const DetailsComponent = new FilmDetails(film);
-    render(filmContainer, filmComponent, RenderPosition.BEFOREEND);
-
-    const openDetails = () => {
-      showPopup(DetailsComponent);
-    };
-
-    const closeDetails = () => {
-      closePopup(DetailsComponent);
-    };
-    const closeDetailsKey = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        closePopup(DetailsComponent);
-        document.removeEventListener(`keydown`, closeDetailsKey);
-      }
-    };
-    filmComponent.openPopupHandler(() => {
-      openDetails();
-      document.addEventListener(`keydown`, closeDetailsKey);
-    });
-
-    DetailsComponent.closePopupHandler(() => {
-      closeDetails();
-      document.removeEventListener(`keydown`, closeDetailsKey);
-    });
+  _renderCard(filmListContainer, film, holder) {
+    const filmPresenter = new FilmPresenter(this._handleFilmChange);
+    filmPresenter.init(filmListContainer, film);
+    holder[film.id] = filmPresenter;
   }
 
+  _handleFilmChange(updatedTask) {
+    this._boardFilms = updateItem(this._boardFilms, updateItem);
+    this._sourcedBoardFilms = updateItem(this._sourcedBoardFilms, updateItem);
+    this._filmPresenter[updatedTask.id].init(null, updatedTask);
+  }
   _topRatedFilms() {
     this._boardFilms.sort((a, b) => b.score - a.score).slice(0, 2).forEach((element) => {
-      this._renderCard(this._topRatedContainer, element);
+      this._renderCard(this._topRatedContainer, element, this._topRatedPresenter);
     });
   }
 
   _topCommentedfilms() {
     this._boardFilms.sort((a, b) => b.commentsCount - a.commentsCount).slice(0, 2).forEach((element) => {
-      this._renderCard(this._topCommentedContainer, element);
+      this._renderCard(this._topCommentedContainer, element, this._topCommentedPresenter);
     });
   }
 
@@ -113,7 +94,7 @@ export default class Board {
 
       } else {
         this._boardFilms.slice(counter, counter + 5).forEach((element) => {
-          this._renderCard(this._filmListContainer, element);
+          this._renderCard(this._filmListContainer, element, this._filmPresenter);
         });
       }
       counter += 5;
@@ -163,7 +144,8 @@ export default class Board {
   }
 
   _clearFilmsBoard() {
-    this._filmListContainer.innerHTML = ``;
+    Object.values(this._filmPresenter).forEach((presenter) => presenter.destroy());
+    this._filmPresenter = {};
   }
 
 }

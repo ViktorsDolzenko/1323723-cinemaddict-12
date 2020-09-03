@@ -20,5 +20,8 @@
   "engines": {
     "node": "10"
   },
-  "dependencies": {}
+  "dependencies": {
+    "moment": "2.27.0",
+    "moment-locales-webpack-plugin": "1.2.0"
+  }
 }
