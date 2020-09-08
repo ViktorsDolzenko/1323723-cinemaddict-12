@@ -1,11 +1,10 @@
 import
 UserRatingView
   from "./view/user-rating.js";
-import
-FilterView
-  from "./view/nav.js";
 
+import FilterModel from "./model/filter.js";
 
+import "./model/films.js";
 import
 FooterStats
   from "./view/footer-stats.js";
@@ -14,28 +13,30 @@ import {
 } from "./mock/film-description.js";
 
 import {
-  filterCount
-} from "./mock/filter-components.js";
-import {
   render,
   RenderPosition,
 } from "./utils/render.js";
 import Board from "./presenter/board.js";
+import FilmsModel from "./model/films.js";
+import Navigation from "./presenter/filter.js";
 
 const NEW_FILM = 20;
-
 export const filmMock = new Array(NEW_FILM).fill().map(generateFilm);
-const filtersNumber = filterCount();
 
 const pageHeader = document.querySelector(`.header`);
-
-render(pageHeader, new UserRatingView(), RenderPosition.BEFOREEND);
-
 const pageMain = document.querySelector(`.main`);
+render(pageHeader, new UserRatingView(), RenderPosition.BEFOREEND);
+const filterModel = new FilterModel();
+const filmModel = new FilmsModel();
+filmModel.setFilms(filmMock);
+const boardPresenter = new Board(pageMain, filmModel, filterModel);
+
+const navigation = new Navigation(pageMain, filterModel, filmModel, boardPresenter);
+
+boardPresenter.init();
+navigation.init();
 
 
-render(pageMain, new FilterView(filtersNumber), RenderPosition.AFTERBEGIN);
 const footerStats = document.querySelector(`.footer__statistics`);
 render(footerStats, new FooterStats(filmMock), RenderPosition.BEFOREEND);
-const boardPresenter = new Board(pageMain);
-boardPresenter.init(filmMock);
+

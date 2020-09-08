@@ -4,13 +4,13 @@ import {
 export default class Abstract {
   constructor() {
     if (new.target === Abstract) {
-      throw new Error(`Can't be  instantiate Abstrac, only concrete one.`);
+      throw new Error(`Can't be  instantiate Abstract, only concrete one.`);
     }
     this._element = null;
     this._callback = {};
   }
   getTemplate() {
-    throw new Error(`Abstact method not implemented : getTemplate`);
+    throw new Error(`Abstract method not implemented : getTemplate`);
   }
 
   getElement() {

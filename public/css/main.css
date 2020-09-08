@@ -213,7 +213,6 @@ button {
   border-bottom: solid 2px var(--outline-color);
   display: flex;
   align-items: flex-start;
-  justify-content: center;
   font-size: var(--font-size-bigger);
   font-weight: 800;
 }

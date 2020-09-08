@@ -56,14 +56,6 @@ const generateGenre = () => {
   return genres[getRandomInt(0, genres.length - 1)];
 };
 
-const generateDuration = () => {
-  let hours = getRandomInt(1, 2);
-  let minutes = getRandomInt(0, 59);
-  if (minutes < 10) {
-    minutes = `0` + minutes;
-  }
-  return hours + `h ` + minutes + `m`;
-};
 
 const generatePeople = (n) => {
   const randomPeople = shuffle(people);
@@ -87,7 +79,7 @@ export const generateFilm = () => {
     score: generateScore().toFixed(1),
     year: generateYear(),
     genre: generateGenre(),
-    duration: generateDuration(),
+    duration: getRandomInt(100, 180),
     commentsCount: getRandomInt(1, 300),
     actors: generatePeople(3),
     writer: generatePeople(1),

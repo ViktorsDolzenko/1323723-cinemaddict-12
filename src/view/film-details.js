@@ -1,6 +1,6 @@
-import Abstract from "./abstract.js";
+import Smart from "./smart.js";
 
-export default class FilmDetails extends Abstract {
+export default class FilmDetails extends Smart {
   constructor(film) {
     super();
     const {
@@ -31,14 +31,13 @@ export default class FilmDetails extends Abstract {
     this._isFavorite = isFavorite;
     this._isWatchlist = isWatchlist;
     this._isWatched = isWatched;
-    this._onClickHandler = this._closeClickHandler.bind(this);
-    this._watchListFilmsClickHandler = this._watchListClickHandler.bind(this);
+    this._clickHandler = this._clickHandler.bind(this);
+    this._watchListFilmsClickHandler = this._watchlistClickHandler.bind(this);
     this._favoriteFilmsClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedFilmsClickHandler = this._watchedClickHandler.bind(this);
     this._film = film;
-    this._setWatchedClickHandler();
-    this._setFavoriteClickHandler();
-    this._setWatchListClickHandler();
+    this._callback = {};
+    this._setInnerHandlers();
   }
 
   getTemplate() {
@@ -214,47 +213,44 @@ export default class FilmDetails extends Abstract {
 </section>`
     );
   }
-
-  _watchedClickHandler() {
-    this._updateData({isWatched: !this._film.isWatched});
-  }
-
-  _favoriteClickHandler() {
-    this._updateData({isFavorite: !this._film.isFavorite});
-  }
-
-  _watchListClickHandler() {
-    this._updateData({isWatchlist: !this._film.isWatchlist});
-  }
-  _setWatchListClickHandler(callback) {
-    this._callback.watchListClick = callback;
-    this.getElement().querySelector(`#watchlist`).addEventListener(`click`, this._watchListFilmsClickHandler);
-  }
-
-  _setFavoriteClickHandler(callback) {
-    this._callback.favoriteClick = callback;
-    this.getElement().querySelector(`#favorite`).addEventListener(`click`, this._favoriteFilmsClickHandler);
-  }
-
-  _setWatchedClickHandler(callback) {
-    this._callback.watchedClick = callback;
-    this.getElement().querySelector(`#watched`).addEventListener(`click`, this._watchedFilmsClickHandler);
-  }
-
-  _updateData(update) {
-    this._film = Object.assign({},
-        this._film, update
-    );
-  }
-
-  _closeClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.onClose(this._film);
+  _clickHandler(evt) {
+    this._callback.click(evt);
   }
 
   cardHandler(callback) {
-    this._callback.onClose = callback;
-    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._onClickHandler);
+    this._callback.click = callback;
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._clickHandler);
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector(`#watchlist`).addEventListener(`change`, this._watchlistClickHandler);
+    this.getElement().querySelector(`#watched`).addEventListener(`click`, this._watchedClickHandler);
+    this.getElement().querySelector(`#favorite`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+
+  _watchlistClickHandler() {
+    this.updateData({
+      isWatchlist: !this._film.isWatchlist
+    });
+  }
+
+  _watchedClickHandler() {
+    this.updateData({
+      isWatched: !this._film.isWatched
+    });
+  }
+
+
+  _favoriteClickHandler() {
+    this.updateData({
+      isFavorite: !this._film.isFavorite
+    });
+  }
+
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.cardHandler(this._callback.click);
   }
 }
 

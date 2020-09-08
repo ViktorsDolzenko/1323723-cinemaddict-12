@@ -2,7 +2,6 @@ import NewFilm
   from "../view/new-film.js";
 import FilmDetails
   from "../view/film-details.js";
-
 import {
   render,
   RenderPosition,
@@ -11,15 +10,20 @@ import {
   remove,
   replace
 } from "../utils/render.js";
-import Smart from "../view/smart.js";
+import {UserAction, UpdateType} from "../const.js";
 
+const Mode = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`
+};
 
-export default class Film extends Smart {
-  constructor(changeData) {
-    super();
+export default class Film {
+  constructor(changeData, handleModeChange) {
     this._filmComponent = null;
     this._detailsComponent = null;
+    this._mode = Mode.DEFAULT;
     this._changeData = changeData;
+    this._handleModeChange = handleModeChange;
     this._openPopupHandler = this._openPopupHandler.bind(this);
     this._closePopupHandler = this._closePopupHandler.bind(this);
     this._closeDetailsKey = this._closeDetailsKey.bind(this);
@@ -38,7 +42,6 @@ export default class Film extends Smart {
     this._filmComponent.setWatchListClickHandler(this._watchListClickHandler);
     this._filmComponent.setFavoriteClickHandler(this._favoriteClickHandler);
     this._filmComponent.setWatchedClickHandler(this._watchedClickHandler);
-    this._detailsComponent.cardHandler(this._closePopupHandler);
 
     if (prevFilmComponent === null || prevDetailsComponent === null) {
       render(this._filmListContainer, this._filmComponent, RenderPosition.BEFOREEND);
@@ -46,30 +49,29 @@ export default class Film extends Smart {
     }
     replace(this._filmComponent, prevFilmComponent);
     replace(this._detailsComponent, prevDetailsComponent);
-
-  }
-
-  destroy() {
-    remove(this._filmComponent);
-    remove(this._detailsComponent);
+    remove(prevFilmComponent);
+    remove(prevDetailsComponent);
   }
 
 
   _closeDetailsKey(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
-      closePopup(this._detailsComponent);
+      remove(this._detailsComponent);
       document.removeEventListener(`keydown`, this._closeDetailsKey);
     }
   }
 
   _openDetails() {
+    this._mode = Mode.EDITING;
+    this._handleModeChange();
     showPopup(this._detailsComponent);
-    document.addEventListener(`keydown`, this._closeDetailsKey);
+    this._detailsComponent.cardHandler(this._closePopupHandler);
+    this._detailsComponent.restoreHandlers();
   }
 
-  _closeDetails(film) {
-    closePopup(this._detailsComponent);
-    this.updateData(film);
+  _closeDetails() {
+    remove(this._detailsComponent);
+    this._mode = Mode.DEFAULT;
     document.removeEventListener(`keydown`, this._closeDetailsKey);
   }
 
@@ -77,8 +79,52 @@ export default class Film extends Smart {
     this._openDetails();
   }
 
-  _closePopupHandler(film) {
-    this._closeDetails(film);
+  _closePopupHandler() {
+    this._closeDetails();
+  }
+
+  closePopupitems() {
+    this._closeDetails();
+  }
+
+  _favoriteClickHandler() {
+    this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
+        Object.assign({},
+            this._film, {
+              isFavorite: !this._film.isFavorite
+            }
+        )
+    );
+  }
+
+  _watchListClickHandler() {
+    this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
+        Object.assign({},
+            this._film, {
+              isWatchlist: !this._film.isWatchlist
+            }
+        )
+    );
+  }
+  _watchedClickHandler() {
+    this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
+        Object.assign({},
+            this._film, {
+              isWatched: !this._film.isWatched
+            }
+        )
+    );
+  }
+
+  destroy() {
+    remove(this._filmComponent);
+    remove(this._detailsComponent);
   }
 }
 
