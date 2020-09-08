@@ -240,7 +240,6 @@ export default class FilmDetails extends Smart {
     });
   }
 
-
   _favoriteClickHandler() {
     this.updateData({
       isFavorite: !this._film.isFavorite
