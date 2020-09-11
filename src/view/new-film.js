@@ -1,5 +1,6 @@
 import Abstract from "./abstract.js";
 import moment from "moment";
+
 export default class NewFilm extends Abstract {
   constructor(film) {
     super();
@@ -21,7 +22,6 @@ export default class NewFilm extends Abstract {
     this._poster = poster;
     this._description = description;
     this._score = score;
-    this._year = year;
     this._genre = genre;
     this._commentsCount = commentsCount;
     this._isFavorite = isFavorite;
@@ -33,7 +33,9 @@ export default class NewFilm extends Abstract {
     this._watchedFilmsClickHandler = this._watchedClickHandler.bind(this);
     const durationMoment = moment.duration(duration, `minutes`);
     this._duration = moment.utc(durationMoment.as(`milliseconds`)).format(`H[h] m[m]`);
+    this._year = year;
   }
+
 
   getTemplate() {
     return (

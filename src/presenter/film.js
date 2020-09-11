@@ -6,7 +6,6 @@ import {
   render,
   RenderPosition,
   showPopup,
-  closePopup,
   remove,
   replace
 } from "../utils/render.js";
@@ -79,7 +78,8 @@ export default class Film {
     this._openDetails();
   }
 
-  _closePopupHandler() {
+  _closePopupHandler(film) {
+    this._changeData(UserAction.UPDATE_FILM, UpdateType.MINOR, film);
     this._closeDetails();
   }
 
@@ -121,6 +121,7 @@ export default class Film {
         )
     );
   }
+
 
   destroy() {
     remove(this._filmComponent);

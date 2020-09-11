@@ -1,7 +1,7 @@
 import Smart from "./smart.js";
 
 export default class FilmDetails extends Smart {
-  constructor(film) {
+  constructor(film, updateData) {
     super();
     const {
       title,
@@ -31,10 +31,11 @@ export default class FilmDetails extends Smart {
     this._isFavorite = isFavorite;
     this._isWatchlist = isWatchlist;
     this._isWatched = isWatched;
+    this._updateData = updateData;
     this._clickHandler = this._clickHandler.bind(this);
-    this._watchListFilmsClickHandler = this._watchlistClickHandler.bind(this);
-    this._favoriteFilmsClickHandler = this._favoriteClickHandler.bind(this);
-    this._watchedFilmsClickHandler = this._watchedClickHandler.bind(this);
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._film = film;
     this._callback = {};
     this._setInnerHandlers();
@@ -108,13 +109,13 @@ export default class FilmDetails extends Smart {
       </div>
 
       <section class="film-details__controls">
-        <input type="checkbox" class="film-details__control-input visually-hidden" ${this._isWatchlist ? `checked` : ``} id="watchlist" name="watchlist">
+        <input type="checkbox" class="film-details__control-input visually-hidden" ${this._film.isWatchlist ? `checked` : ``} id="watchlist" name="watchlist">
         <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" ${this._isWatched ? `checked` : ``} id="watched" name="watched">
+        <input type="checkbox" class="film-details__control-input visually-hidden" ${this._film.isWatched ? `checked` : ``} id="watched" name="watched">
         <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" ${this._isFavorite ? `checked` : ``} id="favorite" name="favorite">
+        <input type="checkbox" class="film-details__control-input visually-hidden" ${this._film.isFavorite ? `checked` : ``} id="favorite" name="favorite">
         <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
       </section>
     </div>
@@ -214,7 +215,9 @@ export default class FilmDetails extends Smart {
     );
   }
   _clickHandler(evt) {
-    this._callback.click(evt);
+    evt.preventDefault();
+    document.body.classList.remove(`hide-overflow`);
+    this._callback.click(this._film);
   }
 
   cardHandler(callback) {
@@ -231,19 +234,19 @@ export default class FilmDetails extends Smart {
   _watchlistClickHandler() {
     this.updateData({
       isWatchlist: !this._film.isWatchlist
-    });
+    }, true);
   }
 
   _watchedClickHandler() {
     this.updateData({
       isWatched: !this._film.isWatched
-    });
+    }, true);
   }
 
   _favoriteClickHandler() {
     this.updateData({
       isFavorite: !this._film.isFavorite
-    });
+    }, true);
   }
 
 

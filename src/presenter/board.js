@@ -70,8 +70,8 @@ export default class Board {
 
 
   _getFilms() {
-    const films = this._filmsModel.getFilms();
     const filterType = this._filtersModel.getFilter();
+    const films = this._filmsModel.getFilms();
     const filteredFilms = filter[filterType](films);
     switch (this._currentSortType) {
       case SortType.RATING:
@@ -81,7 +81,7 @@ export default class Board {
       case SortType.DEFAULT:
         return filteredFilms.slice();
     }
-    return filteredFilms;
+    return filteredFilms.slice();
   }
   _renderCard(filmListContainer, film, holder) {
     const filmPresenter = new FilmPresenter(this._handleViewAction, this._handleModeChange);
@@ -107,7 +107,7 @@ export default class Board {
         this._renderBoard();
         break;
       case UpdateType.MAJOR:
-        this._clearBoard({resetRenderedFilmCount: true, resetSortType: true});
+        this._clearBoard({resetRenderedFilmCount: true});
         this._renderBoard();
         break;
     }
