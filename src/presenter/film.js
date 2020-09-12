@@ -79,7 +79,7 @@ export default class Film {
   }
 
   _closePopupHandler(film) {
-    this._changeData(UserAction.UPDATE_FILM, UpdateType.MINOR, film);
+    this._changeData(UserAction.UPDATE_FILM, UpdateType.MAJOR, film);
     this._closeDetails();
   }
 
@@ -90,7 +90,7 @@ export default class Film {
   _favoriteClickHandler() {
     this._changeData(
         UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
+        UpdateType.MAJOR,
         Object.assign({},
             this._film, {
               isFavorite: !this._film.isFavorite
@@ -102,7 +102,7 @@ export default class Film {
   _watchListClickHandler() {
     this._changeData(
         UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
+        UpdateType.MAJOR,
         Object.assign({},
             this._film, {
               isWatchlist: !this._film.isWatchlist
@@ -113,7 +113,7 @@ export default class Film {
   _watchedClickHandler() {
     this._changeData(
         UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
+        UpdateType.MAJOR,
         Object.assign({},
             this._film, {
               isWatched: !this._film.isWatched

@@ -5,12 +5,12 @@ import {filter} from "../utils/filter.js";
 
 
 export default class FilterPresenter {
-  constructor(container, filtersModel, filmsModel, board) {
+  constructor(container, filtersModel, filmsModel) {
     this._container = container;
     this._filtersModel = filtersModel;
     this._filmsModel = filmsModel;
     this._filters = this._filtersModel.getFilter();
-    this._board = board;
+    this._currentFiltersType = null;
     this._filtersComponent = null;
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFiltersTypeChange = this._handleFiltersTypeChange.bind(this);
@@ -74,13 +74,9 @@ export default class FilterPresenter {
       },
       watched: {
         type: FilterTypes.WATCHED,
-        name: `Watched`,
+        name: `History`,
         count: filter[FilterTypes.WATCHED](films).length
       },
     };
-  }
-
-  destroy() {
-    remove(this._filtersComponent);
   }
 }

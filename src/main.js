@@ -29,12 +29,12 @@ render(pageHeader, new UserRatingView(), RenderPosition.BEFOREEND);
 const filterModel = new FilterModel();
 const filmModel = new FilmsModel();
 filmModel.setFilms(filmMock);
-const boardPresenter = new Board(pageMain, filmModel, filterModel);
 
-const navigation = new Navigation(pageMain, filterModel, filmModel, boardPresenter);
 
-boardPresenter.init();
+const navigation = new Navigation(pageMain, filterModel, filmModel);
 navigation.init();
+const boardPresenter = new Board(pageMain, filmModel, filterModel);
+boardPresenter.init();
 
 
 const footerStats = document.querySelector(`.footer__statistics`);
