@@ -20,3 +20,10 @@ export const FilterTypes = {
   FAVORITES: `favorites`,
   WATCHED: `watched`,
 };
+
+export const Emoji = {
+  [`EMOJI-ANGRY`]: `angry`,
+  [`EMOJI-PUKE`]: `puke`,
+  [`EMOJI-SLEEPING`]: `sleeping`,
+  [`EMOJI-SMILE`]: `smile`,
+};

@@ -10,14 +10,13 @@ import {
   replace
 } from "../utils/render.js";
 import {UserAction, UpdateType} from "../const.js";
-
 const Mode = {
   DEFAULT: `DEFAULT`,
   EDITING: `EDITING`
 };
 
 export default class Film {
-  constructor(changeData, handleModeChange) {
+  constructor(changeData, handleModeChange, commentsModel) {
     this._filmComponent = null;
     this._detailsComponent = null;
     this._mode = Mode.DEFAULT;
@@ -29,6 +28,7 @@ export default class Film {
     this._watchListClickHandler = this._watchListClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._commentsModel = commentsModel;
   }
   init(filmListContainer, film) {
     this._film = film;
@@ -121,12 +121,12 @@ export default class Film {
         )
     );
   }
-
-
   destroy() {
     remove(this._filmComponent);
     remove(this._detailsComponent);
   }
+
+
 }
 
 
