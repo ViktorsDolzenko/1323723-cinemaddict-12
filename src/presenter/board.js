@@ -25,7 +25,6 @@ import {
 import {filter} from "../utils/filter.js";
 
 import FilmPresenter from "./film.js";
-import NewFilm from "../view/new-film.js";
 
 const pageMain = document.querySelector(`.main`);
 const FILM_COUNT_PER_STEP = 5;
@@ -37,16 +36,17 @@ export default class Board {
     this._showMoreButtonComponent = null;
     this._boardContainer = boardContainer;
     this._filmContainerComponent = new FilmContainer();
-    this._topRatedComponent = new TopRatedFilms();
-    this._topCommentedComponent = new TopCommentedFilms();
+    this._topRatedComponent = null;
+    this._topCommentedComponent = null;
     this._noDataComponent = new NoData();
     this._sortComponent = new SortView();
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._filmPresenter = {};
+    this._topFilmPresenter = {};
+    this._topCommentedPresenter = {};
     this._onClickShowMoreFilms = this._showMoreFilms().bind(this);
     this._filmList = this._filmContainerComponent.getElement().querySelector(`.films-list`);
     this._filmListContainer = this._filmContainerComponent.getElement().querySelector(`.films-list__container`);
-    this._topCommentedContainer = this._topCommentedComponent.getElement().querySelector(`.films-list__container--top-commented`);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -59,10 +59,16 @@ export default class Board {
   }
 
   init() {
+    this._topRatedComponent = new TopRatedFilms();
+    this._topCommentedComponent = new TopCommentedFilms();
+    render(this._filmContainerComponent, this._topRatedComponent, RenderPosition.BEFOREEND);
+    render(this._filmContainerComponent, this._topCommentedComponent, RenderPosition.BEFOREEND);
     this._renderSort();
     render(pageMain, this._filmContainerComponent, RenderPosition.BEFOREEND);
     this._renderBoard();
     this._onClickShowMoreFilms();
+    this._topRatedFilms();
+    this._topCommentedfilms();
   }
 
 
@@ -110,17 +116,16 @@ export default class Board {
   }
 
 
-  topRatedFilms() {
-    render(this._filmContainerComponent, this._topRatedComponent, RenderPosition.BEFOREEND);
+  _topRatedFilms() {
+    this._topRatedListContainer = this._topRatedComponent.getElement().querySelector(`.films-list__container--top-rated`);
     this._getFilms().sort((a, b) => b.score - a.score).slice(0, 2).forEach((element) => {
-      const filmsListTopRatedComponent = new NewFilm(element);
-      this._renderCard(this._boardContainer, filmsListTopRatedComponent, this._filmPresenter);
+      this._renderCard(this._topRatedListContainer, element, this._topFilmPresenter);
     });
   }
 
   _topCommentedfilms() {
-    render(this._filmContainerComponent, this._topCommentedComponent, RenderPosition.BEFOREEND);
-    this._getFilms().sort((a, b) => b.commentsCount - a.commentsCount).slice(0, 2).forEach((element) => {
+    this._topCommentedContainer = this._topCommentedComponent.getElement().querySelector(`.films-list__container--top-commented`);
+    this._getFilms().sort((a, b) => b.comments - a.comments).slice(0, 2).forEach((element) => {
       this._renderCard(this._topCommentedContainer, element, this._topCommentedPresenter);
     });
   }
@@ -174,6 +179,8 @@ export default class Board {
     Object.values(this._filmPresenter).forEach((presenter) => presenter.destroy());
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     remove(this._showMoreButtonComponent);
+    remove(this._topRatedComponent);
+    remove(this._topCommentedComponent);
   }
 
 
@@ -181,9 +188,10 @@ export default class Board {
     const filmCount = this._getFilms().length;
 
     Object
-      .values(this._filmPresenter)
+      .values(this._filmPresenter, this._topCommentedPresenter)
       .forEach((presenter) => presenter.destroy());
     this._filmPresenter = {};
+    this._topCommentedPresenter = {};
     remove(this._sortComponent);
     remove(this._topRatedComponent);
     remove(this._topCommentedComponent);
@@ -206,6 +214,7 @@ export default class Board {
       this._noFilms();
       return;
     }
+
     this._onClickShowMoreFilms = this._showMoreFilms().bind(this);
     if (filmCount >= this._renderedFilmCount) {
       this._showMoreFilmsHandler();

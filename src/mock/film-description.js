@@ -123,7 +123,7 @@ const generateComment = () => {
 export const generateComments = () => {
   const comments = [];
 
-  for (let i = 0; i < getRandomInt(0, 5); i++) {
+  for (let i = 0; i < getRandomInt(0, 8); i++) {
     comments.push(generateComment());
   }
   return comments;
@@ -139,7 +139,6 @@ export const generateFilm = () => {
     year: generateYear(),
     genre: generateGenre(),
     duration: getRandomInt(100, 180),
-    commentsCount: getRandomInt(1, 300),
     actors: generatePeople(3),
     writer: generatePeople(1),
     director: generatePeople(1),

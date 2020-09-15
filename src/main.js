@@ -35,10 +35,8 @@ const commentsModel = new CommentsModel();
 const navigation = new Navigation(pageMain, filterModel, filmModel);
 navigation.init();
 const boardPresenter = new Board(pageMain, filmModel, filterModel, commentsModel);
-const topRated = new TopRatedFilms().getElement().querySelector(`.films-list__container--top-rated`);
-const boardPresenterTopRated = new Board(topRated, filmModel, filterModel, commentsModel);
 boardPresenter.init();
-boardPresenterTopRated._topRatedFilms();
+
 
 const footerStats = document.querySelector(`.footer__statistics`);
 render(footerStats, new FooterStats(filmMock), RenderPosition.BEFOREEND);
