@@ -125,7 +125,7 @@ export default class Board {
 
   _topCommentedfilms() {
     this._topCommentedContainer = this._topCommentedComponent.getElement().querySelector(`.films-list__container--top-commented`);
-    this._getFilms().sort((a, b) => b.comments - a.comments).slice(0, 2).forEach((element) => {
+    this._getFilms().sort((a, b) => b.comments.length - a.comments.length).slice(0, 2).forEach((element) => {
       this._renderCard(this._topCommentedContainer, element, this._topCommentedPresenter);
     });
   }
