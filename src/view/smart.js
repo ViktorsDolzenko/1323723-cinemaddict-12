@@ -1,40 +1,42 @@
-import Abstract from "./abstract.js";
-
+import Abstract from "./abstract";
 export default class Smart extends Abstract {
   constructor() {
     super();
-    this._changeData = {};
+    this._film = {};
   }
 
-  _favoriteClickHandler() {
-    this._changeData(
-        Object.assign({},
-            this._film, {
-              isFavorite: !this._film.isFavorite
-            }
-        )
+  updateData(update, justDataUpdating) {
+    if (!update) {
+      return;
+    }
+
+    this._film = Object.assign(
+        {},
+        this._film,
+        update
     );
+
+    if (justDataUpdating) {
+      return;
+    }
+
+    this.updateElement();
   }
 
-  _watchListClickHandler() {
-    this._changeData(
-        Object.assign({},
-            this._film, {
-              isWatchlist: !this._film.isWatchlist
-            }
-        )
-    );
+  updateElement() {
+    let prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
+    prevElement = null;
+
+    this.restoreHandlers();
   }
-  _watchedClickHandler() {
-    this._changeData(
-        Object.assign({},
-            this._film, {
-              isWatched: !this._film.isWatched
-            }
-        )
-    );
-  }
-  updateData(film) {
-    this._changeData(Object.assign({}, this._film, film));
+
+  restoreHandlers() {
+    throw new Error(`Abstract method not implemented: resetHandlers`);
   }
 }

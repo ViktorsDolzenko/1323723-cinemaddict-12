@@ -1,4 +1,6 @@
 import Abstract from "./abstract.js";
+import moment from "moment";
+
 export default class NewFilm extends Abstract {
   constructor(film) {
     super();
@@ -10,28 +12,30 @@ export default class NewFilm extends Abstract {
       year,
       genre,
       duration,
-      commentsCount,
       isFavorite,
       isWatchlist,
       isWatched,
+      comments,
     } = film;
     this._element = null;
     this._title = title;
     this._poster = poster;
     this._description = description;
     this._score = score;
-    this._year = year;
     this._genre = genre;
-    this._duration = duration;
-    this._commentsCount = commentsCount;
     this._isFavorite = isFavorite;
     this._isWatchlist = isWatchlist;
     this._isWatched = isWatched;
+    this._comments = comments;
     this._onClickHandler = this._openClickHandler.bind(this);
     this._watchListFilmsClickHandler = this._watchListClickHandler.bind(this);
     this._favoriteFilmsClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedFilmsClickHandler = this._watchedClickHandler.bind(this);
+    const durationMoment = moment.duration(duration, `minutes`);
+    this._duration = moment.utc(durationMoment.as(`milliseconds`)).format(`H[h] m[m]`);
+    this._year = year;
   }
+
 
   getTemplate() {
     return (
@@ -45,7 +49,7 @@ export default class NewFilm extends Abstract {
   </p>
   <img src=${this._poster} alt="" class="film-card__poster">
   <p class="film-card__description">${this._description}</p>
-  <a class="film-card__comments">${this._commentsCount} comments</a>
+  <a class="film-card__comments">${this._comments.length} comments</a>
   <form class="film-card__controls">
     <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${this._isWatchlist ? `film-card__controls-item--active` : ``}">Add to watchlist</button>
     <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${this._isWatched ? `film-card__controls-item--active` : ``}">Mark as watched</button>

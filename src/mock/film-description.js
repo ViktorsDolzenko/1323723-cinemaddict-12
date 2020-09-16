@@ -22,6 +22,13 @@ const people = [`Lee Aaker`,
   `Kirk Acevedo`
 ];
 
+const emojies = [
+  `images/emoji/angry.png`,
+  `images/emoji/puke.png`,
+  `images/emoji/sleeping.png`,
+  `images/emoji/smile.png`
+];
+
 
 const generateTitle = () => {
   const title = [`Terminator`, `Troy`, `Matrix`, `Back in Future`, `Oblivion`, `Haters`, `Pimp`, `Gladiator`, `Superman`];
@@ -52,18 +59,11 @@ const generateYear = () => {
 };
 
 const generateGenre = () => {
-  const genres = [`horror`, `comedy`, `romantic`, `drama`, `thriller`];
-  return genres[getRandomInt(0, genres.length - 1)];
+  const genres = [`Horror`, `Comedy`, `Romantic`, `Drama`, `Thriller`];
+  const randomGenres = shuffle(genres).slice(0, 3);
+  return randomGenres;
 };
 
-const generateDuration = () => {
-  let hours = getRandomInt(1, 2);
-  let minutes = getRandomInt(0, 59);
-  if (minutes < 10) {
-    minutes = `0` + minutes;
-  }
-  return hours + `h ` + minutes + `m`;
-};
 
 const generatePeople = (n) => {
   const randomPeople = shuffle(people);
@@ -78,6 +78,57 @@ const getRandomBool = () => {
 };
 
 
+const generateCommentText = () => {
+  const commentText = [
+    `Interesting setting and a good cast`,
+    `Booooooooooring`,
+    `Very very old. Meh`,
+    `Almost two hours? Seriously?`
+  ];
+
+  const randomIndex = getRandomInt(0, commentText.length - 1);
+
+  return commentText[randomIndex];
+};
+
+export const generateCommentAuthor = () => {
+  const authors = [
+    `Tim Macoveev`,
+    `John Doe`,
+    `Matthew Norman`,
+    `Caitlin Harmon`,
+    `Jane Bond`,
+    `Roger Harrell`
+  ];
+
+  const randomIndex = getRandomInt(0, authors.length - 1);
+
+  return authors[randomIndex];
+};
+
+const generateCommentTime = () => {
+  return parseInt(new Date().getTime(), 10);
+};
+
+const generateComment = () => {
+  return {
+    author: generateCommentAuthor(),
+    time: generateCommentTime(),
+    text: generateCommentText(),
+    emoji: emojies[getRandomInt(0, emojies.length - 1)],
+    emojiesList: emojies
+  };
+};
+
+export const generateComments = () => {
+  const comments = [];
+
+  for (let i = 0; i < getRandomInt(0, 8); i++) {
+    comments.push(generateComment());
+  }
+  return comments;
+};
+
 export const generateFilm = () => {
   return {
     id: generateId(),
@@ -87,13 +138,13 @@ export const generateFilm = () => {
     score: generateScore().toFixed(1),
     year: generateYear(),
     genre: generateGenre(),
-    duration: generateDuration(),
-    commentsCount: getRandomInt(1, 300),
+    duration: getRandomInt(100, 180),
     actors: generatePeople(3),
     writer: generatePeople(1),
     director: generatePeople(1),
     isFavorite: getRandomBool(),
     isWatchlist: getRandomBool(),
     isWatched: getRandomBool(),
+    comments: generateComments()
   };
 };

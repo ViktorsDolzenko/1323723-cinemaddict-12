@@ -1,8 +1,9 @@
 import Abstract from "./abstract.js";
 import {SortType} from "../const.js";
 export default class SortView extends Abstract {
-  constructor() {
+  constructor(active = `default`) {
     super();
+    this._isActive = active;
     this._onClickSortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
   getTemplate() {
@@ -16,14 +17,19 @@ export default class SortView extends Abstract {
     if (evt.target.tagName !== `A`) {
       return;
     }
+
     evt.preventDefault();
+    this._changeActive(evt.target);
+    this._callback.sortTypeChange(evt.target.dataset.sortType);
+  }
+
+  _changeActive(target) {
     this.getElement().querySelector(`.sort__button--active`).classList.remove(`sort__button--active`);
-    evt.target.classList.add(`sort__button--active`);
-    this._callback(evt.target.dataset.sortType);
+    target.classList.add(`sort__button--active`);
   }
 
   setSortTypeChangeHandler(callback) {
-    this._callback = callback;
+    this._callback.sortTypeChange = callback;
     this.getElement().addEventListener(`click`, this._onClickSortTypeChangeHandler);
   }
 }
