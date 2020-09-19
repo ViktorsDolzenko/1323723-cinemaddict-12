@@ -56,17 +56,17 @@ export default class Board {
     this._commentsModel = commentsModel;
     this._commentsModel.addObserver(this._handleModelEvent);
     this._currentSortType = SortType.DEFAULT;
+    this._topRatedComponent = new TopRatedFilms();
+    this._topCommentedComponent = new TopCommentedFilms();
   }
 
   init() {
-    this._topRatedComponent = new TopRatedFilms();
-    this._topCommentedComponent = new TopCommentedFilms();
-    render(this._filmContainerComponent, this._topRatedComponent, RenderPosition.BEFOREEND);
-    render(this._filmContainerComponent, this._topCommentedComponent, RenderPosition.BEFOREEND);
     this._renderSort();
     render(pageMain, this._filmContainerComponent, RenderPosition.BEFOREEND);
     this._renderBoard();
     this._onClickShowMoreFilms();
+    render(this._filmContainerComponent, this._topRatedComponent, RenderPosition.BEFOREEND);
+    render(this._filmContainerComponent, this._topCommentedComponent, RenderPosition.BEFOREEND);
     this._topRatedFilms();
     this._topCommentedfilms();
   }
@@ -132,10 +132,12 @@ export default class Board {
 
 
   _noFilms() {
+    this._filmListContainer = this._filmContainerComponent.getElement().querySelector(`.films-list__container`);
     render(this._filmListContainer, this._noDataComponent, RenderPosition.BEFOREEND);
   }
 
   _showMoreFilms() {
+    this._filmListContainer = this._filmContainerComponent.getElement().querySelector(`.films-list__container`);
     let counter = 0;
     const filmCount = this._getFilms().length;
     const addFilms = () => {
@@ -155,6 +157,7 @@ export default class Board {
   }
 
   _showMoreFilmsHandler() {
+    this._filmList = this._filmContainerComponent.getElement().querySelector(`.films-list`);
     this._showMoreButtonComponent = new ShowMoreButton();
     this._showMoreButtonComponent.setClickHandler(this._onClickShowMoreFilms);
     render(this._filmList, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
@@ -188,10 +191,9 @@ export default class Board {
     const filmCount = this._getFilms().length;
 
     Object
-      .values(this._filmPresenter, this._topCommentedPresenter)
+      .values(this._filmPresenter)
       .forEach((presenter) => presenter.destroy());
     this._filmPresenter = {};
-    this._topCommentedPresenter = {};
     remove(this._sortComponent);
     remove(this._topRatedComponent);
     remove(this._topCommentedComponent);
@@ -231,10 +233,12 @@ export default class Board {
     render(this._boardContainer, this._filterComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _destroy() {
-    this._clearBoard({resetRenderedFilmCount: true, resetSortType: true});
-    this._filmsModel.removeObserver(this._handleModelEvent);
-    this._filterModel.removeObserver(this._handleModelEvent);
+
+  destroy() {
+    remove(this._sortComponent);
+    remove(this._filmContainerComponent);
+    remove(this._topRatedComponent);
+    remove(this._topCommentedComponent);
   }
 }
 

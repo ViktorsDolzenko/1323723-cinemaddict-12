@@ -3,7 +3,6 @@ import {render, RenderPosition, remove, replace} from "../utils/render.js";
 import FilterView from "../view/nav.js";
 import {filter} from "../utils/filter.js";
 
-
 export default class FilterPresenter {
   constructor(container, filtersModel, filmsModel) {
     this._container = container;
@@ -11,7 +10,7 @@ export default class FilterPresenter {
     this._filmsModel = filmsModel;
     this._filters = this._filtersModel.getFilter();
     this._currentFiltersType = null;
-    this._filtersComponent = null;
+    this.filtersComponent = null;
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFiltersTypeChange = this._handleFiltersTypeChange.bind(this);
     this._filmsModel.addObserver(this._handleModelEvent);
@@ -21,23 +20,27 @@ export default class FilterPresenter {
   init() {
     this._currentFiltersType = this._filtersModel.getFilter();
     const filters = this._getFilters();
-    const prevFiltersComponent = this._filtersComponent;
+    const prevFiltersComponent = this.filtersComponent;
 
-    this._filtersComponent = new FilterView(filters, this._currentFiltersType);
+    this.filtersComponent = new FilterView(filters, this._currentFiltersType);
 
-    this._filtersComponent.setFilterTypeChangeHandler(this._handleFiltersTypeChange);
-
+    this.filtersComponent.setFilterTypeChangeHandler(this._handleFiltersTypeChange);
+    this.filtersComponent.setStatsClickHandler(this._handleSiteMenuClick);
     if (prevFiltersComponent === null) {
-      render(this._container, this._filtersComponent, RenderPosition.AFTERBEGIN);
+      render(this._container, this.filtersComponent, RenderPosition.AFTERBEGIN);
       return;
     }
 
-    replace(this._filtersComponent, prevFiltersComponent);
+    replace(this.filtersComponent, prevFiltersComponent);
     remove(prevFiltersComponent);
   }
 
   _handleModelEvent() {
     this.init();
+  }
+
+  disableCurrentFilter() {
+    this._currentFiltersType = null;
   }
 
   _handleFiltersTypeChange(filtersType) {
@@ -78,5 +81,8 @@ export default class FilterPresenter {
         count: filter[FilterTypes.WATCHED](films).length
       },
     };
+  }
+  setStatsClickHandler(handleSiteMenuClick) {
+    this._handleSiteMenuClick = handleSiteMenuClick;
   }
 }
