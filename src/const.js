@@ -27,3 +27,16 @@ export const Emoji = {
   [`EMOJI-SLEEPING`]: `sleeping`,
   [`EMOJI-SMILE`]: `smile`,
 };
+
+export const MenuItem = {
+  FILTERS: `FILTERS`,
+  STATISTICS: `STATISTICS`
+};
+
+export const StatisticFilter = {
+  ALL_TIME: `all-time`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`
+};
