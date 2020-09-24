@@ -124,7 +124,7 @@ export default class Stats extends Smart {
   }
 
   getTemplate() {
-    return createStatisticTemplate(this._statisticData, getUserStatus(this._moviesModel._films.length));
+    return createStatisticTemplate(this._statisticData, getUserStatus(this._statisticData.watchedCount));
   }
 
   setStatisticInputHandler(callback) {

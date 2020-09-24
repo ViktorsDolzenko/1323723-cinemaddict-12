@@ -25,12 +25,13 @@ import {
 import {filter} from "../utils/filter.js";
 
 import FilmPresenter from "./film.js";
+import Loading from "../view/loading.js";
 
 const pageMain = document.querySelector(`.main`);
 const FILM_COUNT_PER_STEP = 5;
 
 export default class Board {
-  constructor(boardContainer, filmsModel, filtersModel, commentsModel) {
+  constructor(boardContainer, filmsModel, filtersModel, commentsModel, api) {
     this._filtersModel = filtersModel;
     this._filmsModel = filmsModel;
     this._showMoreButtonComponent = null;
@@ -44,7 +45,6 @@ export default class Board {
     this._filmPresenter = {};
     this._topFilmPresenter = {};
     this._topCommentedPresenter = {};
-    this._onClickShowMoreFilms = this._showMoreFilms().bind(this);
     this._filmList = this._filmContainerComponent.getElement().querySelector(`.films-list`);
     this._filmListContainer = this._filmContainerComponent.getElement().querySelector(`.films-list__container`);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
@@ -54,17 +54,18 @@ export default class Board {
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filtersModel.addObserver(this._handleModelEvent);
     this._commentsModel = commentsModel;
-    this._commentsModel.addObserver(this._handleModelEvent);
     this._currentSortType = SortType.DEFAULT;
     this._topRatedComponent = new TopRatedFilms();
     this._topCommentedComponent = new TopCommentedFilms();
+    this._isLoading = true;
+    this._loadingComponent = new Loading();
+    this._api = api;
   }
 
   init() {
     this._renderSort();
     render(pageMain, this._filmContainerComponent, RenderPosition.BEFOREEND);
     this._renderBoard();
-    this._onClickShowMoreFilms();
     render(this._filmContainerComponent, this._topRatedComponent, RenderPosition.BEFOREEND);
     render(this._filmContainerComponent, this._topCommentedComponent, RenderPosition.BEFOREEND);
     this._topRatedFilms();
@@ -86,7 +87,7 @@ export default class Board {
     }
   }
   _renderCard(filmListContainer, film, holder) {
-    const filmPresenter = new FilmPresenter(this._handleViewAction, this._handleModeChange, this._commentsModel);
+    const filmPresenter = new FilmPresenter(this._handleViewAction, this._handleModeChange, this._api);
     filmPresenter.init(filmListContainer, film);
     holder[film.id] = filmPresenter;
   }
@@ -94,8 +95,14 @@ export default class Board {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, update);
+        this._api.updateFilm(update).then((response) => {
+          this._filmsModel.updateFilm(updateType, response);
+        });
         break;
+      case UserAction.ADD_COMMENT:
+        this._api.addComment(update).then((response) => {
+          this._commentsModel.addComment(updateType, response);
+        });
     }
   }
 
@@ -110,6 +117,11 @@ export default class Board {
         break;
       case UpdateType.MAJOR:
         this._clearBoard({resetRenderedFilmCount: true, resetSortType: true});
+        this.init();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this.init();
         break;
     }
@@ -150,7 +162,7 @@ export default class Board {
       }
       counter += FILM_COUNT_PER_STEP;
       if (counter >= filmCount) {
-        this._showMoreButtonComponent.getElement().remove();
+        remove(this._showMoreButtonComponent);
       }
     };
     return addFilms;
@@ -172,6 +184,9 @@ export default class Board {
     this.init();
   }
 
+  _renderLoading() {
+    render(this._filmListContainer, this._loadingComponent, RenderPosition.AFTERBEGIN);
+  }
 
   _renderSort() {
     render(this._boardContainer, this._sortComponent, RenderPosition.BEFOREEND);
@@ -197,6 +212,7 @@ export default class Board {
     remove(this._sortComponent);
     remove(this._topRatedComponent);
     remove(this._topCommentedComponent);
+    remove(this._loadingComponent);
     remove(this._showMoreButtonComponent);
     if (resetRenderedFilmCount) {
       this._renderedFilmCount = FILM_COUNT_PER_STEP;
@@ -210,6 +226,10 @@ export default class Board {
   }
 
   _renderBoard() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
     const films = this._getFilms();
     const filmCount = films.length;
     if (filmCount === 0) {
@@ -218,6 +238,7 @@ export default class Board {
     }
 
     this._onClickShowMoreFilms = this._showMoreFilms().bind(this);
+    this._onClickShowMoreFilms();
     if (filmCount >= this._renderedFilmCount) {
       this._showMoreFilmsHandler();
     }
