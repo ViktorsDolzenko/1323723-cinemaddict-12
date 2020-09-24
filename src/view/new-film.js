@@ -43,7 +43,7 @@ export default class NewFilm extends Abstract {
   <h3 class="film-card__title">${this._title}</h3>
   <p class="film-card__rating">${this._score}</p>
   <p class="film-card__info">
-    <span class="film-card__year">${this._year}</span>
+    <span class="film-card__year">${moment(this._year).format(`yyyy`)}</span>
     <span class="film-card__duration">${this._duration}</span>
     <span class="film-card__genre">${this._genre}</span>
   </p>

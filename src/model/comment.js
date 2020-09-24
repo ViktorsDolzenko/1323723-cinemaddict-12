@@ -1,3 +1,4 @@
+
 import Observer from "../utils/observer.js";
 
 export default class CommentsModel extends Observer {
@@ -37,4 +38,35 @@ export default class CommentsModel extends Observer {
 
     this.notify(updateType);
   }
+
+  static adaptToClient(comment) {
+
+    const adaptedComment = Object.assign(
+        {},
+        comment,
+        {
+          id: comment.id,
+          comment: comment.comment,
+          author: comment.author,
+          emotion: comment.emotion,
+          date: comment.date
+        }
+    );
+    return adaptedComment;
+  }
+
+  static adaptToServer(comment) {
+    const adaptedComment =
+        {
+          [`id`]: comment.id,
+          [`comment`]: comment.comment,
+          [`author`]: comment.author,
+          [`emotion`]: comment.emotion,
+          [`date`]: comment.date,
+        };
+
+
+    return adaptedComment;
+  }
+
 }

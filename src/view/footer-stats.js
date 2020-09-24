@@ -1,14 +1,14 @@
 import Abstract from "./abstract.js";
 export default class FooterStats extends Abstract {
-  constructor(filmMock) {
+  constructor(film) {
     super();
     this._element = null;
-    this._filmMock = filmMock;
+    this._film = film;
   }
 
   getTemplate() {
     return (
-      `<p> ${this._filmMock.length} movies inside</p>`
+      `<p> ${this._film.length} movies inside</p>`
     );
   }
 }

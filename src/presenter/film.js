@@ -10,13 +10,15 @@ import {
   replace
 } from "../utils/render.js";
 import {UserAction, UpdateType} from "../const.js";
+import CommentsModel from "../model/comment.js";
 const Mode = {
   DEFAULT: `DEFAULT`,
   EDITING: `EDITING`
 };
 
+
 export default class Film {
-  constructor(changeData, handleModeChange, commentsModel) {
+  constructor(changeData, handleModeChange, api) {
     this._filmComponent = null;
     this._detailsComponent = null;
     this._mode = Mode.DEFAULT;
@@ -28,7 +30,9 @@ export default class Film {
     this._watchListClickHandler = this._watchListClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
-    this._commentsModel = commentsModel;
+    this._commentsModel = new CommentsModel();
+    this._commentsModel.addObserver(this._handleViewAction.bind(this));
+    this._api = api;
   }
   init(filmListContainer, film) {
     this._film = film;
@@ -36,7 +40,7 @@ export default class Film {
     const prevFilmComponent = this._filmComponent;
     const prevDetailsComponent = this._detailsComponent;
     this._filmComponent = new NewFilm(film);
-    this._detailsComponent = new FilmDetails(film);
+    this._detailsComponent = new FilmDetails(film, this._commentsModel);
     this._filmComponent.openPopupHandler(this._openPopupHandler);
     this._filmComponent.setWatchListClickHandler(this._watchListClickHandler);
     this._filmComponent.setFavoriteClickHandler(this._favoriteClickHandler);
@@ -61,11 +65,15 @@ export default class Film {
   }
 
   _openDetails() {
-    this._mode = Mode.EDITING;
-    this._handleModeChange();
-    showPopup(this._detailsComponent);
-    this._detailsComponent.cardHandler(this._closePopupHandler);
-    this._detailsComponent.restoreHandlers();
+    this._api.getComments(this._film.id)
+    .then((comments) => {
+      this._mode = Mode.EDITING;
+      this._handleModeChange();
+      this._commentsModel.setComments(comments);
+      showPopup(this._detailsComponent);
+      this._detailsComponent.cardHandler(this._closePopupHandler);
+      this._detailsComponent.restoreHandlers();
+    });
   }
 
   _closeDetails() {
@@ -120,6 +128,17 @@ export default class Film {
             }
         )
     );
+  }
+
+  _handleViewAction(actionType, updateType, comment) {
+    switch (actionType) {
+      case UserAction.ADD_COMMENT:
+        this._api.addComment(comment).then((response) => {
+          this._commentsModel.addComment(updateType, response);
+          this._detailsComponent.updateElement();
+        });
+        break;
+    }
   }
   destroy() {
     remove(this._filmComponent);
