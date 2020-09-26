@@ -261,6 +261,7 @@ export default class FilmDetails extends Smart {
 
       const inputComment = evt.target.value;
       const emojiImg = this.getElement().querySelector(`.film-details__emoji-list input:checked`).value;
+      const inputSelector = this.getElement().querySelector(`.film-details__comment-input`);
       const newComment = {
         author: ``,
         time: parseInt(new Date().getTime(), 10),
@@ -268,20 +269,20 @@ export default class FilmDetails extends Smart {
         emoji: emojiImg,
         filmId: this.id,
       };
-
+      inputSelector.disabled = true;
       this._api.addComment(newComment)
       .then((filmData) =>{
         this._film = FilmsModel.adaptToClient(filmData.movie);
         this._commentModel.setComments(filmData.comments);
         this.updateElement();
+        inputSelector.disabled = false;
+        inputSelector.value = ``;
       })
       .catch(()=>{
         const popup = this.getElement();
         popup.style.animation = `shake 2s`;
         setTimeout(() => {
-          const inputSelector = this.getElement().querySelector(`.film-details__comment-input`);
-          inputSelector.value = ``;
-          inputSelector.disabled = true;
+          inputSelector.disabled = false;
         }, 2);
       });
     }
@@ -295,22 +296,24 @@ export default class FilmDetails extends Smart {
     }
     this._currentDeleteButton = evt.target;
     this._currentDeleteButton.setAttribute(`disabled`, `disabled`);
-    this._currentDeleteButton.innerText = `Deleting....`;
+    this._currentDeleteButton.textContent = `Deleting....`;
+    this._currentDeleteButton.disabled = true;
     const commentId = evt.target.dataset.idType;
     this._api.deleteComment(commentId)
       .then(() => {
-        setTimeout(() => {
-          this._commentModel.deleteComment(UserAction.DELETE_COMMENT, {id: commentId});
-          this.updateElement();
-        }, 500);
+        this._commentModel.deleteComment(UserAction.DELETE_COMMENT, {id: commentId});
+        this.updateElement();
       })
       .catch(()=>{
         const popup = this.getElement();
         popup.style.animation = `shake 2s`;
-        setTimeout(() => {
-          this._currentDeleteButton.innerText = `Delete`;
-        }, 2);
 
+      })
+      .finally(()=>{
+        setTimeout(() => {
+          this._currentDeleteButton.textContent = `Delete`;
+          this._currentDeleteButton.disabled = false;
+        }, 2);
       });
   }
 
