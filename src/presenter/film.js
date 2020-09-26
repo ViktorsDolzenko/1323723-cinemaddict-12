@@ -31,7 +31,6 @@ export default class Film {
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._commentsModel = new CommentsModel();
-    this._commentsModel.addObserver(this._handleViewAction.bind(this));
     this._api = api;
   }
   init(filmListContainer, film) {
@@ -40,7 +39,7 @@ export default class Film {
     const prevFilmComponent = this._filmComponent;
     const prevDetailsComponent = this._detailsComponent;
     this._filmComponent = new NewFilm(film);
-    this._detailsComponent = new FilmDetails(film, this._commentsModel);
+    this._detailsComponent = new FilmDetails(film, this._commentsModel, this._api);
     this._filmComponent.openPopupHandler(this._openPopupHandler);
     this._filmComponent.setWatchListClickHandler(this._watchListClickHandler);
     this._filmComponent.setFavoriteClickHandler(this._favoriteClickHandler);
@@ -130,16 +129,6 @@ export default class Film {
     );
   }
 
-  _handleViewAction(actionType, updateType, comment) {
-    switch (actionType) {
-      case UserAction.ADD_COMMENT:
-        this._api.addComment(comment).then((response) => {
-          this._commentsModel.addComment(updateType, response);
-          this._detailsComponent.updateElement();
-        });
-        break;
-    }
-  }
   destroy() {
     remove(this._filmComponent);
     remove(this._detailsComponent);

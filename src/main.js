@@ -63,7 +63,7 @@ api.getFilms()
   .then((films) => {
     filmModel.setFilms(UpdateType.INIT, films);
     navigation.init();
-    render(pageHeader, new UserRatingView(films.length), RenderPosition.BEFOREEND);
+    render(pageHeader, new UserRatingView(navigation.getWatchedCount()), RenderPosition.BEFOREEND);
     render(footerStats, new FooterStats(filmModel.getFilms()), RenderPosition.BEFOREEND);
   })
   .catch(() => {

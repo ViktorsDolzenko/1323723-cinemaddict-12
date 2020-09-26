@@ -1,17 +1,21 @@
 import Smart from "./smart.js";
-import he from "he";
 import {formatCommentDate} from "../utils/comment.js";
 import moment from "moment";
-import {UserAction, UpdateType} from "../const.js";
+import FilmsModel from "../model/films";
+import {
+  UserAction
+} from "../const.js";
+import he from "he";
 const KeyCode = {
   ENTER: 13
 };
 
 
 export default class FilmDetails extends Smart {
-  constructor(film, commentsModel) {
+  constructor(film, commentsModel, api) {
     super();
     const {
+      id,
       title,
       titleAlternative,
       poster,
@@ -36,6 +40,8 @@ export default class FilmDetails extends Smart {
     this._score = score;
     this._year = year;
     this._genre = genre;
+    this.id = id;
+    this._api = api;
     const durationMoment = moment.duration(duration, `minutes`);
     this._duration = moment.utc(durationMoment.as(`milliseconds`)).format(`H[h] m[m]`);
     this._actors = actors;
@@ -53,6 +59,7 @@ export default class FilmDetails extends Smart {
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._emojiClickHandler = this._emojiClickHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
+    this._commentDeleteHandler = this._commentDeleteHandler.bind(this);
     this._film = film;
     this._callback = {};
     this._setInnerHandlers();
@@ -73,7 +80,7 @@ export default class FilmDetails extends Smart {
             <p class="film-details__comment-info">
               <span class="film-details__comment-author">${comment.author}</span>
               <span class="film-details__comment-day">${filmCommentDate}</span>
-              <button class="film-details__comment-delete">Delete</button>
+              <button class="film-details__comment-delete" data-id-type="${comment.id}">Delete</button>
             </p>
           </div>
         </li>`
@@ -160,7 +167,7 @@ export default class FilmDetails extends Smart {
 
     <div class="form-details__bottom-container">
     <section class="film-details__comments-wrap">
-    <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${this._film.comments.length}</span></h3>
+    <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${this._commentModel.getComments().length}</span></h3>
     <ul class="film-details__comments-list">
       ${this._commentModel.getComments().map(this._createComment).join(``)}
                </ul>
@@ -213,6 +220,8 @@ export default class FilmDetails extends Smart {
     this.getElement().querySelector(`.film-details__comment-input`)
     .addEventListener(`keydown`, this._commentInputHandler);
 
+    this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, this._commentDeleteHandler);
+
     this.getElement().querySelector(`.film-details__emoji-list`)
     .addEventListener(`click`, (evt) => {
       if (evt.target.tagName === `INPUT`) {
@@ -253,16 +262,58 @@ export default class FilmDetails extends Smart {
       const inputComment = evt.target.value;
       const emojiImg = this.getElement().querySelector(`.film-details__emoji-list input:checked`).value;
       const newComment = {
-        author: `qwerty`,
+        author: ``,
         time: parseInt(new Date().getTime(), 10),
         text: inputComment,
-        emoji: `images/emoji/${emojiImg}.png`
+        emoji: emojiImg,
+        filmId: this.id,
       };
 
-      this._commentModel.notify(UserAction.ADD_COMMENT, UpdateType.PATCH, newComment);
-      this.updateElement();
+      this._api.addComment(newComment)
+      .then((filmData) =>{
+        this._film = FilmsModel.adaptToClient(filmData.movie);
+        this._commentModel.setComments(filmData.comments);
+        this.updateElement();
+      })
+      .catch(()=>{
+        const popup = this.getElement();
+        popup.style.animation = `shake 2s`;
+        setTimeout(() => {
+          const inputSelector = this.getElement().querySelector(`.film-details__comment-input`);
+          inputSelector.value = ``;
+          inputSelector.disabled = true;
+        }, 2);
+      });
     }
   }
+
+
+  _commentDeleteHandler(evt) {
+    evt.preventDefault();
+    if (!evt.target.classList.contains(`film-details__comment-delete`)) {
+      return;
+    }
+    this._currentDeleteButton = evt.target;
+    this._currentDeleteButton.setAttribute(`disabled`, `disabled`);
+    this._currentDeleteButton.innerText = `Deleting....`;
+    const commentId = evt.target.dataset.idType;
+    this._api.deleteComment(commentId)
+      .then(() => {
+        setTimeout(() => {
+          this._commentModel.deleteComment(UserAction.DELETE_COMMENT, {id: commentId});
+          this.updateElement();
+        }, 500);
+      })
+      .catch(()=>{
+        const popup = this.getElement();
+        popup.style.animation = `shake 2s`;
+        setTimeout(() => {
+          this._currentDeleteButton.innerText = `Delete`;
+        }, 2);
+
+      });
+  }
+
 
   restoreHandlers() {
     this._setInnerHandlers();

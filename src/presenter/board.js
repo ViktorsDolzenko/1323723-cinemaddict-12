@@ -99,10 +99,6 @@ export default class Board {
           this._filmsModel.updateFilm(updateType, response);
         });
         break;
-      case UserAction.ADD_COMMENT:
-        this._api.addComment(update).then((response) => {
-          this._commentsModel.addComment(updateType, response);
-        });
     }
   }
 
