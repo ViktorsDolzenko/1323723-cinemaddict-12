@@ -9,10 +9,6 @@ import
 FooterStats
   from "./view/footer-stats.js";
 import {
-  generateFilm
-} from "./mock/film-description.js";
-
-import {
   render,
   RenderPosition,
 } from "./utils/render.js";
@@ -21,10 +17,16 @@ import FilmsModel from "./model/films.js";
 import Navigation from "./presenter/filter.js";
 import CommentsModel from "./model/comment.js";
 import {MenuItem} from "./const.js";
+import Api from "./api.js";
+import {UpdateType} from "./const.js";
 
-const NEW_FILM = 20;
+const pageHeader = document.querySelector(`.header`);
+const pageMain = document.querySelector(`.main`);
+const AUTHORIZATION = `Basic er883jdzbdw`;
+const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict`;
 
-export const filmMock = new Array(NEW_FILM).fill().map(generateFilm);
+const api = new Api(END_POINT, AUTHORIZATION);
+
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
@@ -33,28 +35,40 @@ const handleSiteMenuClick = (menuItem) => {
       boardPresenter.destroy();
       statisticPresenter.init();
       break;
-    default: { if (statisticPresenter.isInitActive()) {
-      statisticPresenter.destroy();
-    }
+    default: {
+      if (statisticPresenter.isInitActive()) {
+        statisticPresenter.destroy();
+      }
     }
   }
 };
-const pageHeader = document.querySelector(`.header`);
-const pageMain = document.querySelector(`.main`);
-render(pageHeader, new UserRatingView(), RenderPosition.BEFOREEND);
+
+
 const filterModel = new FilterModel();
 const filmModel = new FilmsModel();
-filmModel.setFilms(filmMock);
 const commentsModel = new CommentsModel();
 const navigation = new Navigation(pageMain, filterModel, filmModel);
 navigation.setStatsClickHandler(handleSiteMenuClick);
-navigation.init();
+
+
 const statisticPresenter = new Statistic(pageMain, filmModel);
 
-const boardPresenter = new Board(pageMain, filmModel, filterModel, commentsModel);
+const boardPresenter = new Board(pageMain, filmModel, filterModel, commentsModel, api);
 boardPresenter.init();
 
-
 const footerStats = document.querySelector(`.footer__statistics`);
-render(footerStats, new FooterStats(filmMock), RenderPosition.BEFOREEND);
+
+
+api.getFilms()
+  .then((films) => {
+    filmModel.setFilms(UpdateType.INIT, films);
+    navigation.init();
+    render(pageHeader, new UserRatingView(navigation.getWatchedCount()), RenderPosition.BEFOREEND);
+    render(footerStats, new FooterStats(filmModel.getFilms()), RenderPosition.BEFOREEND);
+  })
+  .catch(() => {
+    filmModel.setFilms(UpdateType.INIT, []);
+    navigation.init();
+    render(footerStats, new FooterStats(filmModel.getFilms()), RenderPosition.BEFOREEND);
+  });
 

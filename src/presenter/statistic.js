@@ -22,6 +22,7 @@ export default class Statistic {
   }
 
   init() {
+    this.destroy();
     this._renderStatistic();
     this._isStatisticInit = true;
   }

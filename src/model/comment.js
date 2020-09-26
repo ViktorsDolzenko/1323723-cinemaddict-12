@@ -1,3 +1,4 @@
+
 import Observer from "../utils/observer.js";
 
 export default class CommentsModel extends Observer {
@@ -23,7 +24,7 @@ export default class CommentsModel extends Observer {
     this.notify(updateType, update);
   }
 
-  deleteComment(updateType, update) {
+  deleteComment(UserAction, update) {
     const index = this._comments.findIndex((comment) => comment.id === update.id);
 
     if (index === -1) {
@@ -35,6 +36,40 @@ export default class CommentsModel extends Observer {
       ...this._comments.slice(index + 1)
     ];
 
-    this.notify(updateType);
+    this.notify(UserAction);
   }
+
+  static adaptToClient(comment) {
+    const adaptedComment = Object.assign(
+        {},
+        comment,
+        {
+          text: comment.comment,
+          time: comment.date,
+          emoji: comment.emotion,
+        });
+
+    delete adaptedComment.emoji;
+    delete adaptedComment.text;
+    delete adaptedComment.time;
+
+    return adaptedComment;
+  }
+
+  static adaptToServer(comment) {
+    let date = new Date();
+    const adaptedComment = Object.assign(
+        {},
+        comment, {
+          "comment": comment.text,
+          "date": date.toISOString(comment.time),
+          "emotion": comment.emoji,
+        }
+    );
+    delete adaptedComment.emoji;
+    delete adaptedComment.text;
+    delete adaptedComment.time;
+    return adaptedComment;
+  }
+
 }

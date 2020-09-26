@@ -1,5 +1,4 @@
 import Smart from './smart.js';
-import moment from 'moment';
 import {StatisticFilter} from '../const.js';
 import {getUserStatus} from '../utils/user-profile.js';
 import Chart from 'chart.js';
@@ -124,7 +123,7 @@ export default class Stats extends Smart {
   }
 
   getTemplate() {
-    return createStatisticTemplate(this._statisticData, getUserStatus(this._moviesModel._films.length));
+    return createStatisticTemplate(this._statisticData, getUserStatus(this._statisticData.watchedCount));
   }
 
   setStatisticInputHandler(callback) {

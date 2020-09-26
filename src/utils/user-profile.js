@@ -6,7 +6,7 @@ const WatchCountBound = {
 };
 
 export const getUserStatus = (watchedCount) => {
-  let profileRating = null;
+  let profileRating;
   switch (true) {
     case watchedCount >= WatchCountBound.NOVICE && watchedCount < WatchCountBound.FAN:
       profileRating = `Novice`;
