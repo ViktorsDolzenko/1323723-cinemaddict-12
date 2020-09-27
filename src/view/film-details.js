@@ -177,7 +177,7 @@ export default class FilmDetails extends Smart {
                   <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" required></textarea>
                 </label>
                 <div class="film-details__emoji-list">
-                  <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" required>
+                  <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
                   <label class="film-details__emoji-label" for="emoji-smile">
                     <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
                   </label>
