@@ -57,7 +57,7 @@ export default class CommentsModel extends Observer {
   }
 
   static adaptToServer(comment) {
-    let date = new Date();
+    const date = new Date();
     const adaptedComment = Object.assign(
         {},
         comment, {
