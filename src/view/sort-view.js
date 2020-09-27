@@ -26,8 +26,6 @@ export default class SortView extends Smart {
   }
 
   _changeActive(target) {
-    // this.getElement().querySelector(`.sort__button--active`).classList.remove(`sort__button--active`);
-    // target.classList.add(`sort__button--active`);
     this._currentSortType = target.dataset.sortType;
     this.updateElement();
   }
