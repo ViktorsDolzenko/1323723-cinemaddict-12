@@ -24,12 +24,6 @@ export const FilterTypes = {
   WATCHED: `watched`,
 };
 
-export const Emoji = {
-  [`EMOJI-ANGRY`]: `angry`,
-  [`EMOJI-PUKE`]: `puke`,
-  [`EMOJI-SLEEPING`]: `sleeping`,
-  [`EMOJI-SMILE`]: `smile`,
-};
 
 export const MenuItem = {
   FILTERS: `FILTERS`,

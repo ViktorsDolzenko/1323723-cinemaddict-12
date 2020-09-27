@@ -59,7 +59,7 @@ export default class Film {
   _closeDetailsKey(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       remove(this._detailsComponent);
-      document.removeEventListener(`keydown`, this._closeDetailsKey);
+      document.body.classList.remove(`hide-overflow`);
     }
   }
 
@@ -72,6 +72,7 @@ export default class Film {
       showPopup(this._detailsComponent);
       this._detailsComponent.cardHandler(this._closePopupHandler);
       this._detailsComponent.restoreHandlers();
+      document.addEventListener(`keydown`, this._closeDetailsKey);
     });
   }
 
@@ -86,11 +87,11 @@ export default class Film {
   }
 
   _closePopupHandler(film) {
-    this._changeData(UserAction.UPDATE_FILM, UpdateType.MAJOR, film);
+    this._changeData(UserAction.UPDATE_FILM, UpdateType.MINOR, film);
     this._closeDetails();
   }
 
-  closePopupitems() {
+  closePopupItems() {
     this._closeDetails();
   }
 

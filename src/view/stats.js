@@ -114,10 +114,9 @@ const createStatisticTemplate = ({filter, watchedCount, totalDuration, topGenre}
 };
 
 export default class Stats extends Smart {
-  constructor(statisticData, moviesModel) {
+  constructor(statisticData) {
     super();
     this._statisticData = statisticData;
-    this._moviesModel = moviesModel;
     this._handleStatisticInput = this._handleStatisticInput.bind(this);
     this._setChart();
   }
