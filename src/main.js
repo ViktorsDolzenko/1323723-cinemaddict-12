@@ -1,6 +1,6 @@
 import
 UserRatingView
-  from "./view/user-rating.js";
+  from "./view/user-rating-view.js";
 
 import FilterModel from "./model/filter.js";
 import Statistic from "./presenter/statistic.js";
@@ -12,9 +12,9 @@ import {
   render,
   RenderPosition,
 } from "./utils/render.js";
-import Board from "./presenter/board.js";
+import FilmsList from "./presenter/films-list.js";
 import FilmsModel from "./model/films.js";
-import Navigation from "./presenter/filter.js";
+import Navigation from "./presenter/filters.js";
 import CommentsModel from "./model/comment.js";
 import {MenuItem} from "./const.js";
 import Api from "./api.js";
@@ -53,7 +53,7 @@ navigation.setStatsClickHandler(handleSiteMenuClick);
 
 const statisticPresenter = new Statistic(pageMain, filmModel);
 
-const boardPresenter = new Board(pageMain, filmModel, filterModel, commentsModel, api);
+const boardPresenter = new FilmsList(pageMain, filmModel, filterModel, commentsModel, api);
 boardPresenter.init();
 
 const footerStats = document.querySelector(`.footer__statistics`);

@@ -1,14 +1,13 @@
 import {FilterTypes, UpdateType} from "../const.js";
 import {render, RenderPosition, remove, replace} from "../utils/render.js";
-import FilterView from "../view/nav.js";
+import FilterView from "../view/filterView.js";
 import {filter} from "../utils/filter.js";
 
-export default class FilterPresenter {
+export default class Filters {
   constructor(container, filtersModel, filmsModel) {
     this._container = container;
     this._filtersModel = filtersModel;
     this._filmsModel = filmsModel;
-    this._filters = this._filtersModel.getFilter();
     this._currentFiltersType = null;
     this.filtersComponent = null;
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -44,7 +43,7 @@ export default class FilterPresenter {
   }
 
   _handleFiltersTypeChange(filtersType) {
-    if (this._currentFilter === filtersType) {
+    if (!filtersType) {
       return;
     }
 

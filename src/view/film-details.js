@@ -174,10 +174,10 @@ export default class FilmDetails extends Smart {
               <div class="film-details__new-comment">
                 <div for="add-emoji" class="film-details__add-emoji-label"></div>
                 <label class="film-details__comment-label">
-                  <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+                  <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" required></textarea>
                 </label>
                 <div class="film-details__emoji-list">
-                  <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
+                  <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" required>
                   <label class="film-details__emoji-label" for="emoji-smile">
                     <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
                   </label>
@@ -212,6 +212,7 @@ export default class FilmDetails extends Smart {
     this._callback.click = callback;
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._clickHandler);
   }
+
 
   _setInnerHandlers() {
     this.getElement().querySelector(`#watchlist-checkbox`).addEventListener(`change`, this._watchlistClickHandler);
@@ -256,12 +257,18 @@ export default class FilmDetails extends Smart {
     emojiContainer.innerHTML = emoji;
   }
   _commentInputHandler(evt) {
-    if (evt.keyCode === KeyCode.ENTER && evt.ctrlKey) {
+    if (evt.keyCode === KeyCode.ENTER && (evt.ctrlKey || evt.metaKey)) {
       evt.preventDefault();
 
       const inputComment = evt.target.value;
-      const emojiImg = this.getElement().querySelector(`.film-details__emoji-list input:checked`).value;
+      const emojiSelector = this.getElement().querySelector(`.film-details__emoji-list input:checked`);
       const inputSelector = this.getElement().querySelector(`.film-details__comment-input`);
+      const popup = this.getElement();
+      if (inputSelector.length < 1 || !emojiSelector) {
+        popup.style.animation = `shake 2s`;
+        return;
+      }
+      const emojiImg = emojiSelector.value;
       const newComment = {
         author: ``,
         time: parseInt(new Date().getTime(), 10),
@@ -269,6 +276,7 @@ export default class FilmDetails extends Smart {
         emoji: emojiImg,
         filmId: this.id,
       };
+
       inputSelector.disabled = true;
       this._api.addComment(newComment)
       .then((filmData) =>{
@@ -279,11 +287,8 @@ export default class FilmDetails extends Smart {
         inputSelector.value = ``;
       })
       .catch(()=>{
-        const popup = this.getElement();
         popup.style.animation = `shake 2s`;
-        setTimeout(() => {
-          inputSelector.disabled = false;
-        }, 2);
+        inputSelector.disabled = false;
       });
     }
   }
